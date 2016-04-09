@@ -45,7 +45,7 @@ public class ExtboothAction extends BaseAction {
 	@RequestMapping(value="addextbooth")
     @ResponseBody
     public Feedback addExtbooth(Extbooth extbooth,HttpServletRequest request, Model model){
-		log.info("addextbooth----------");
+		log.info("addExtbooth----------");
         int    result  = -1;
         String message = "添加失败";
         try{
@@ -71,7 +71,7 @@ public class ExtboothAction extends BaseAction {
 	 */
 	@RequestMapping(value="tomodifyextbooth")
 	public String toModifyMorespecial(@RequestParam("id")int id,@RequestParam("Edit")String edit,HttpServletRequest request, Model model){
-		log.info("tomodifyextbooth-----------");
+		log.info("toModifyMorespecial-----------");
 		if(id>0){
 			Extbooth extbooth = extboothservice.getExtboothById(id);
 			model.addAttribute("ExtboothInfo", extbooth);
@@ -91,7 +91,7 @@ public class ExtboothAction extends BaseAction {
 	 @RequestMapping(value="modifyextbooth")
 	 @ResponseBody
 	 public Feedback modifyExtbooth(Extbooth extbooth,HttpServletRequest request, Model model){
-		log.info("modifyextbooth-----------");
+		log.info("modifyExtbooth-----------");
         int    result  = -1;
         String message = "更新失败";
         try{
@@ -117,7 +117,7 @@ public class ExtboothAction extends BaseAction {
 	 @RequestMapping(value="delextbooth")
 	 @ResponseBody
 	 public Feedback delExtbooth(@RequestParam("id")int id,HttpServletRequest request, Model model){
-		log.info("delextbooth-----------");
+		log.info("delExtbooth-----------");
         int    result  = -1;
         String message = "删除失败";
         try{

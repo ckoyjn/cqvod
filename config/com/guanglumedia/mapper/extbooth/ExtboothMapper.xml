@@ -40,7 +40,7 @@
 		</where>
 	</select>
 	
-	
+	s
 	<update id='updateExtbooth' parameterType="com.guanglumedia.cms.extbooth.entity.Extbooth">
 		update ext_booth
 		<set>

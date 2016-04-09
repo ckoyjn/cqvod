@@ -72,7 +72,7 @@ public class ActivityAction extends BaseAction{
             message=e.getMessage();
         }
         if(result>0){
-            return Feedback.success("删除成功2222");
+            return Feedback.success("删除成功3333");
         }else{
             return Feedback.fail(message);
         }

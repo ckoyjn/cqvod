@@ -40,9 +40,6 @@
 		</where>
 	</select>
 	
-	<select id="getExtboothById" parameterType="int" resultType="com.guanglumedia.cms.extbooth.entity.Extbooth">
-	   select * from ext_booth where id=#{id}
-	</select>
 	
 	<update id='updateExtbooth' parameterType="com.guanglumedia.cms.extbooth.entity.Extbooth">
 		update ext_booth

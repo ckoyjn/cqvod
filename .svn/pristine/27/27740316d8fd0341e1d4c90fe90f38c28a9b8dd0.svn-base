@@ -1,0 +1,76 @@
+package com.guanglumedia.cms.rollingnews.service;
+
+import java.io.UnsupportedEncodingException;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.session.RowBounds;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.guanglumedia.cms.category.entity.Category;
+import com.guanglumedia.cms.common.PagedModelList;
+import com.guanglumedia.cms.rollingnews.action.RollingnewsAction;
+import com.guanglumedia.cms.rollingnews.dao.RollingnewsDao;
+import com.guanglumedia.cms.rollingnews.entity.Rollingnews;
+
+/**
+ * 滚动信息服务类
+ * @author CaoKai
+ */
+@Service
+public class RollingnewsService {
+	Logger log = LoggerFactory.getLogger(RollingnewsService.class);//获取日志对象
+    @Autowired
+    private RollingnewsDao rollingnewsDao;//声明滚动信息数据访问对象
+    
+    /**
+     * 查询滚动信息的列表
+     * @param pageNo 页码
+     * @param pageRow 每页显示的条数
+     * @param map 总记录数
+     * @return PagedModelList<Map<String, Object>> 返回类型
+     * @throws UnsupportedEncodingException
+     */
+    @Transactional
+    public PagedModelList<Map<String, Object>> findRollnewsList(int pageNo, int pageRow, Map<String, Object> map) throws UnsupportedEncodingException {
+    	log.info("RollingnewsService----findRollnewsList-------");
+    	log.info("pageNo-------" + pageNo);
+    	log.info("pageRow-------" + pageRow);
+    	log.info("map-------" + map);
+    	log.info("map.size()-------" + map.size());
+    	for(int i = 0; i < map.size(); i++){
+    		log.info("map.size()-------" + map.get(i));
+    	}
+        List<Map<String, Object>> list = this.rollingnewsDao.findRollingnewsList(new RowBounds((pageNo - 1) * pageRow, pageRow),map);
+        log.info("list----查询的滚动信息列表---" + list);
+        log.info("list.size()---列表数量----" + list.size());
+        int count = this.rollingnewsDao.findCount();
+        log.info("count---总记录数---" + count);
+        PagedModelList<Map<String, Object>> pml = new PagedModelList<Map<String, Object>>(pageNo, pageRow, count);
+        log.info("pml---创建页面模型列表对象---" + pml);
+        pml.addModels(list);
+        log.info("pml加东西后的------" + pml);
+        return pml;
+    }
+     
+	public  int addRollingnews(Map<String, Object> map) {
+		return rollingnewsDao.addRollingnews(map);
+	}
+	
+	public Rollingnews getRollingnewsById(int id){
+        return rollingnewsDao.getRollingnewsById(id);
+    }
+	
+	
+	public int updateRollingnews(Rollingnews rollingnews){
+        return rollingnewsDao.updateRollingnews(rollingnews);
+    }
+	
+	public int delRollingnews(int id) {
+        return rollingnewsDao.delRollingnews(id);
+    }
+}

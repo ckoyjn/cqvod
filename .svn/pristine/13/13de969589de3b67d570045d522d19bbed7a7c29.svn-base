@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 自定义别名的定义 -->
+	<!-- 系统自定义的别名
+		可以去包的全路径的最后单词的小写
+	 -->
+	 <settings>
+<!-- 		<setting name="lazyLoadingEnabled" value="true"/>
+	 	<setting name="aggressiveLazyLoading" value="false"/>
+	 	开启二级缓存 -->
+	 	<setting name="cacheEnabled" value="true"/></settings>
+	<typeAliases>
+		<!-- <package name="com.lcworld.model"></package> -->
+		<!-- typeAlias alias="EpgMovieInfo" type="com.lcworld.model.EpgMovieInfo"/ -->
+	</typeAliases>
+	
+	<!-- plugins>
+        <plugin interceptor="com.guanglumedia.epg.intercept.PageInterceptor"></plugin>
+    </plugins -->
+
+	<mappers>
+		<mapper resource="com/guanglumedia/mapper/admin/LoginMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/admin/ResourceMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/admin/UserMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/admin/GroupMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/admin/RoleMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/admin/RightMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/common/DistrictMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/movie/MovieMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/movie/PreviewMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/movie/ProductMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/movie/InjectMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/movie/PublishMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/analysis/AnalysisMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/order/OrderMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/card/CardMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/special/SpecialMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/api/FavoriteMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/api/RecommendMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/api/SubjectMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/api/CategoryMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/category/CategoryMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/api/MovieMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/api/UserMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/favorite/CMSFavoriteMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/watchrecode/CMSWatchRecodeMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/api/WatchMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/recommend/RecommendMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/api/OrderMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/bosslog/bosslogMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/api/AccessRecordMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/movie/AssociateMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/activity/ActivityMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/api/ActivityMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/api/ExtboothMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/api/MorespecialMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/api/PageMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/rollingnews/RollingnewsMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/pagerecommend/PagerecommendMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/dynamiccontent/DynamiccontentMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/extbooth/ExtboothMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/morespecial/MorespecialMapper.xml"/>
+		<mapper resource="com/guanglumedia/mapper/actsrecommend/ActsrecommendMapper.xml"/>
+	</mappers>
+	
+	
+</configuration>

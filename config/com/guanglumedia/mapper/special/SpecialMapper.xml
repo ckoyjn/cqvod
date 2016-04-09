@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.cms.special.dao.SpecialDao">
+
+	<insert id="addSpecial" parameterType="map">
+	      insert into cms_special(name,identify,movieIDs,movieNames,status,createtime) 
+	      values(#{name},#{identify},#{movieIDs},#{movieNames},#{status},now())
+	</insert>
+	<delete id="delSpecial" parameterType="int">
+	      delete from cms_special where id=#{id}
+	</delete>
+	<update id="updateSpecial" parameterType="com.guanglumedia.cms.special.entity.Special">
+	      update cms_special 
+	      <set>
+	           <if test="name != null and name !=''">
+	               name=#{name},
+	           </if>
+	           <if test="identify != null and identify != ''">
+	               identify=#{identify},
+	           </if>
+	           <if test="movieIDs != null and movieIDs != ''">
+	               movieIDs=#{movieIDs},
+	           </if>
+	           <if test="movieNames != null and movieNames != ''">
+	               movieNames=#{movieNames},
+	           </if>
+	           <if test="status != null and status != ''">
+	               status=#{status}
+	           </if>
+	      </set>
+	      <where>
+	           id=#{id}
+	      </where>
+	</update>
+	<select id="getSpecialById" parameterType="String" resultType="com.guanglumedia.cms.special.entity.Special">
+	   select * from cms_special where id=#{id}
+	</select>
+	<select id="getCount" resultType="int" parameterType="map">
+	   select count(*) from cms_special 
+	   <where>
+       <if test="name!=null and name!=''">
+       name like concat('%',#{name},'%')
+       </if>
+       <if test="status!=null and status!=''">
+       and status=#{status}
+       </if>
+       </where>
+	</select>
+	<select id="getSpecialList" resultType="com.guanglumedia.cms.special.entity.Special" parameterType="map">
+	   select * from cms_special 
+	   <where>
+	   <if test="name!=null and name!=''">
+	   name like concat('%',#{name},'%')
+	   </if>
+	   <if test="status!=null and status!=''">
+	   and status=#{status}
+	   </if>
+	   </where>
+	</select>
+	<select id="getMoviesBySpecialId" parameterType="int" resultType="map">
+	   select sm.movieid,m.name,m.actor,m.director,m.movietype,sm.defaultimg
+	   ,m.mins,m.language,m.desc,m.backgroundurl,m.poster,m.fluenturl,m.standardurl,m.highurl,m.price,m.paymentimgurl
+	   from special s  join special_movie sm on s.id=sm.specialid join movie m on sm.movieid=m.id
+	   where s.id=#{id}
+	</select>
+	<select id="getMovieCountBySpecialId" resultType="int" parameterType="int">
+	   select count(m.id)
+       from movie m
+       where m.status=1 and not exists(select * from special s join special_movie sm on s.id=sm.specialid where s.id=#{id} and sm.movieid=m.id)
+	</select>
+	<select id="getOnlineMoviesBySpecialId" parameterType="int" resultType="map">
+	   select m.id movieid,m.name,m.actor,m.director
+	   from movie m
+	   where m.status=1 and not exists(select * from special s join special_movie sm on s.id=sm.specialid where s.id=#{id} and sm.movieid=m.id)
+	</select>
+	<insert id="insertSpecialMovies" parameterType="list">
+	   insert into special_movie(specialid,movieid) 
+	   values
+	   <foreach collection="list" index="index" item="item" separator=",">
+	       (#{item.specialid},#{item.movieid})
+	   </foreach>
+	</insert>
+	<select id="getAllMovies" resultType="map">
+	  select * from movie where Status=1
+	</select>
+	<update id="upSpecialMovie" parameterType="int">
+	      update cms_special set movieIDs=#{movieIDs} where id=#{id}
+	</update>
+	
+	<select id="HasSpecialName" resultType="int">
+	  select count(name) from cms_special where name=#{specialName} 
+	  <if test="id!=0">
+	  	and id!=#{id}
+	  </if>
+	</select>
+	
+	<select id="findSpecial" resultType="com.guanglumedia.cms.special.entity.Special">
+		select * from cms_special
+	</select>
+</mapper>	

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.cms.extbooth.dao.ExtboothDao">
+	<resultMap id="ExtboothMap" type="com.guanglumedia.cms.extbooth.entity.Extbooth" >
+		<result property="id"         column="id"></result>
+		<result property="title"      column="title"></result>
+		<result property="sort"       column="sort"></result>
+		<result property="status"     column="status"></result>
+		<result property="type"       column="type"></result>
+		<result property="objectId"   column="objectId"></result>
+		<result property="objectName" column="objectName"></result>
+		<result property="identify"   column="identify"></result>
+		<result property="imgUrl"     column="imgUrl"></result>
+		<result property="createTime" column="createTime"></result>
+		<result property="updateTime" column="updateTime"></result>
+	</resultMap>
+	
+	<select id="findExtboothList" resultType="com.guanglumedia.cms.extbooth.entity.Extbooth" parameterType="map">
+	   select * from ext_booth 
+	   <where>
+		   <if test="objectName!=null and objectName!=''">
+		   objectName like CONCAT('%',#{objectName},'%')
+		   </if>
+		   <if test="type!=null and type!=''">
+		   and type=#{type}
+		   </if>
+	   </where>
+	</select>
+	
+	<select id="findCount" resultType="int" parameterType="map">
+		select count(*) from ext_booth EB
+		<where>
+			1=1 
+			<if test="objectName != null and objectName !=''">
+				and EB.objectName like CONCAT('%', #{objectName},'%')
+			</if>
+			<if test="type != null and type !=''">
+				and EB.type = = #{type}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getExtboothById" parameterType="int" resultType="com.guanglumedia.cms.extbooth.entity.Extbooth">
+	   select * from ext_booth where id=#{id}
+	</select>
+	
+	<update id='updateExtbooth' parameterType="com.guanglumedia.cms.extbooth.entity.Extbooth">
+		update ext_booth
+		<set>
+			<if test="title != null and title !=''">
+				title=#{title,jdbcType=VARCHAR},
+			</if>
+			<if test="sort != null and sort !=''">
+				sort=#{sort,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null and status !=''">
+				status=#{status,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null and type !=''">
+				type=#{type,jdbcType=VARCHAR},
+			</if>
+			<if test="objectName != null and objectName !=''">
+				objectName=#{objectName,jdbcType=VARCHAR},
+			</if>
+			<if test="identify != null and identify !=''">
+				identify=#{identify,jdbcType=VARCHAR},
+			</if>
+			<if test="imgurl != null and imgurl !=''">
+				imgurl=#{imgurl,jdbcType=VARCHAR},
+			</if>
+			<if test="createtime != null and createtime !=''">
+				createtime=#{createtime,jdbcType=VARCHAR},
+			</if>
+			<if test="updatetime != null and updatetime !=''">
+				updatetime=#{updatetime,jdbcType=VARCHAR},
+			</if>
+		</set>
+		<where>
+			id=#{id}
+		</where>
+	</update>
+	
+	<insert id='addExtbooth' parameterType="com.guanglumedia.cms.extbooth.entity.Extbooth">
+		insert into ext_booth(title,status,identify,imgurl,type,sort) 
+		values (
+		#{title},#{status},#{identify},#{imgurl},#{type},#{sort}
+		)
+	</insert>
+	
+	<delete id="delExtbooth" parameterType="int">
+		delete from ext_booth where id=#{id}
+	</delete>
+</mapper>	

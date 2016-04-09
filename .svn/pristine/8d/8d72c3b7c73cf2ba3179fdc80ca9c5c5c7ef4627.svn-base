@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.cms.category.dao.CategoryDao">
+	
+	<insert id="insertCategory" parameterType="com.guanglumedia.cms.category.entity.Category">
+	   insert into cms_category(name,orderby,status,`desc`) values(#{name},#{orderby},#{status},#{desc})
+	</insert>
+	<delete id="deleteCategoryByIds" >
+	   delete from cms_category 
+	   where id in 
+	   <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">
+	   #{id}
+	   </foreach>
+	</delete>
+	<update id="updateCategory">
+	   update cms_category 
+	   <set>
+	       <if test="name != null">name=#{name},</if>
+	       <if test="orderby != null">orderby=#{orderby},</if>
+	       <if test="status != null">status=#{status},</if>
+	       <if test="desc != null">`desc`=#{desc}</if>
+	   </set>
+	   where id=#{id}
+	</update>
+	<select id="getCategoryById" parameterType="int" resultType="com.guanglumedia.cms.category.entity.Category">
+	   select * from cms_category where id=#{id}
+	</select>
+	<select id="getCategoryList" resultType="com.guanglumedia.cms.category.entity.Category">
+	   select * from cms_category order by orderby,id desc
+	</select>
+	<select id="getCategoryCount" resultType="int">
+	   select count(0) from cms_category
+	</select>
+	<select id="getMoviesByCategoryId" resultType="com.guanglumedia.cms.movie.entity.Movie">
+	   select m.*
+	   from cms_category c join cms_category_movie cm on c.id=cm.categoryId
+	   join movie m on cm.movieId=m.id
+	   where c.id=#{id}
+	</select>
+	<select id="getOnlineMoviesByCategoryId" resultType="com.guanglumedia.cms.movie.entity.Movie">
+	   select m.*
+	   from movie m
+	   where m.status=1 and not exists(select * from cms_category c join cms_category_movie cm on c.id=cm.categoryId where c.id=#{id} and cm.movieId=m.id)
+	</select>
+	<select id="getMovieCountByCategoryId" resultType="int">
+	   select count(m.id)
+       from movie m
+       where m.status=1 and not exists(select * from cms_category c join cms_category_movie cm on c.id=cm.categoryId where c.id=#{id} and cm.movieId=m.id)
+	</select>
+	<insert id="insertCategoryMovie" >
+	   insert into cms_category_movie(categoryId,movieId) values
+	   <foreach collection="movieIds" item="movieId" separator="," >
+	       (#{categoryId},#{movieId})
+	   </foreach>
+	</insert>
+	<delete id="delCategoryMovieById">
+	   delete from cms_category_movie where categoryId=#{categoryId} and 
+	   movieId in <foreach collection="movieIds" item="movieId" open="(" close=")" separator="," index="index">
+	       #{movieId}
+	   </foreach>
+	</delete>
+	<select id="hasOrderby" resultType="int">
+		SELECT count(*) FROM cms_category  where orderby=#{orderby} 
+	</select>
+	<select id="getCountGroupByCategoryId" resultType="int">
+		select count(*) as count from cms_category_movie group by categoryId
+	</select>
+</mapper>

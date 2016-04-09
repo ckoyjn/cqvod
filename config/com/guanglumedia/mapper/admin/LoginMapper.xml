@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.cms.admin.dao.LoginDao">
+	<resultMap id="UserMap" type="com.guanglumedia.cms.admin.entity.User" >
+		<result property="ID" column="id"></result>
+		<result property="LoginName" column="loginname"></result>
+		<result property="Password" column="password"></result>
+		<result property="GroupID" column="groupid"></result>
+	</resultMap>
+	
+	<select id="CheckUserLogin" resultMap="UserMap">
+		select * from cms_user where loginname=#{LoginName} and password=#{Password} and status=1
+	</select>
+	<select id="getUserRightByGroupID" resultType="String">
+		SELECT cr.rightaction FROM cms_role_right crr LEFT JOIN cms_right cr ON crr.rightid = cr.id 
+		WHERE crr.roleid IN (SELECT cgr.roleid FROM cms_group_role cgr WHERE cgr.groupid=#{GroupID})
+	</select>
+</mapper>	

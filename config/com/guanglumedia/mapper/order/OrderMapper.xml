@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.cms.order.dao.OrderDao">
+
+	<select id="findOrderList" resultType="map" parameterType="com.guanglumedia.cms.order.entity.Order">
+		SELECT SQL_CALC_FOUND_ROWS t.*,p.name AS productname,w.Name AS filmName,t.price FROM trxnlog t LEFT JOIN product p ON
+		t.`productId`=p.`vodid`
+		LEFT JOIN
+		movie w ON t.`MediaID`=w.`MediaID`
+		<where>
+			<if test="id!=null">
+				and t.id=#{id}
+			</if>
+			<if test="userId!=null and userId!='' ">
+				and t.userId like CONCAT('%', #{userId},'%')
+			</if>
+			<if test="filmName!=null and filmName!=''">
+				and w.name like CONCAT('%', #{filmName},'%')
+			</if>
+			<if test="starttime!=null and starttime != ''">
+				and substr(t.recordTime,1,10) >= #{starttime}
+			</if>
+			<if test="endtime!=null and endtime != ''">
+				and #{endtime} >= substr(t.recordTime,1,10)
+			</if>
+		</where>
+		order by recordtime desc
+	</select>
+	<!-- <select id="findCount" resultType="int" parameterType="com.guanglumedia.cms.order.entity.Order"> 
+		SELECT count(*) FROM trxnlog t LEFT JOIN product p ON t.`productId`=p.`vodid` 
+		LEFT JOIN preview w ON t.`MediaID`=w.`MediaID` <where> <if test="id!=null"> 
+		and t.id=#{id} </if> <if test="userId!=null and userId!='' "> and t.userId 
+		like CONCAT('%', #{userId},'%') </if> <if test="filmName!=null and filmName!=''"> 
+		and p.name like CONCAT('%', #{filmName},'%') </if> </where> </select> -->
+	<select id="findCount" resultType="int">
+		select FOUND_ROWS()
+	</select>
+	<select id="findAllProductId" resultType="map">
+		select id,vodid,`status` from
+		product
+	</select>
+	<select id="findAllMediaId" resultType="map">
+		select MediaID,`status` from
+		movie
+	</select>
+	<insert id="addOrder" parameterType="com.guanglumedia.cms.order.entity.Order">
+		insert into trxnlog (userId,productId,MediaID,price,recordtime)
+		values(#{userId},#{productId},#{mediaId},#{price},#{recordtime})
+	</insert>
+	
+	<select id="exportOrder" resultType="map" parameterType="com.guanglumedia.cms.order.entity.Order">
+        SELECT  t.*,p.name AS productname,w.Name AS filmName,p.price FROM trxnlog t LEFT JOIN product p ON
+        t.`productId`=p.`vodid`
+        LEFT JOIN
+        movie w ON t.`MediaID`=w.`MediaID`
+        <where>
+            <if test="id!=null">
+                and t.id=#{id}
+            </if>
+            <if test="userId!=null and userId!='' ">
+                and t.userId like CONCAT('%', #{userId},'%')
+            </if>
+            <if test="filmName!=null and filmName!=''">
+                and w.name like CONCAT('%', #{filmName},'%')
+            </if>
+        </where>
+    </select>
+    
+	<select id="findPurRelationList" resultType="map" parameterType="com.guanglumedia.cms.order.entity.PurRelation">
+		SELECT SQL_CALC_FOUND_ROWS count(t.id) as paytotal,sum(t.price) as paysum,substr(t.recordtime,1,10) as paytime 
+		from trxnlog t LEFT JOIN
+		movie w ON t.`MediaID`=w.`MediaID`
+		<where>
+			<if test="filmName!=null and filmName!=''">
+				and w.name like CONCAT('%', #{filmName},'%')
+			</if>
+			<if test="starttime!=null and starttime != ''">
+				and substr(t.recordTime,1,10) >= #{starttime}
+			</if>
+			<if test="endtime!=null and endtime != ''">
+				and #{endtime} >= substr(t.recordTime,1,10)
+			</if>
+		</where>
+		group by substr(t.recordtime,1,10)
+		order by substr(t.recordtime,1,10) desc
+	</select>
+	
+	<select id="findTotalPay" resultType="map" parameterType="com.guanglumedia.cms.order.entity.PurRelation">
+		SELECT ifnull(count(t.id),0) as totalpay 
+		from trxnlog t LEFT JOIN
+		movie w ON t.`MediaID`=w.`MediaID`
+		<where>
+			<if test="filmName!=null and filmName!=''">
+				and w.name like CONCAT('%', #{filmName},'%')
+			</if>
+			<if test="starttime!=null and starttime != ''">
+				and substr(t.recordTime,1,10) >= #{starttime}
+			</if>
+			<if test="endtime!=null and endtime != ''">
+				and #{endtime} >= substr(t.recordTime,1,10)
+			</if>
+		</where>
+	</select>
+	
+	<select id="findTotalSum" resultType="map" parameterType="com.guanglumedia.cms.order.entity.PurRelation">
+		SELECT ifnull(sum(t.price),0) as totalsum
+		from trxnlog t LEFT JOIN
+		movie w ON t.`MediaID`=w.`MediaID`
+		<where>
+			<if test="filmName!=null and filmName!=''">
+				and w.name like CONCAT('%', #{filmName},'%')
+			</if>
+			<if test="starttime!=null and starttime != ''">
+				and substr(t.recordTime,1,10) >= #{starttime}
+			</if>
+			<if test="endtime!=null and endtime != ''">
+				and #{endtime} >= substr(t.recordTime,1,10)
+			</if>
+		</where>
+	</select>
+	
+	<select id="findPurRelationDetail" resultType="map" parameterType="com.guanglumedia.cms.order.entity.PurRelation">
+		SELECT SQL_CALC_FOUND_ROWS w.name,count(t.id) as paytotal,sum(t.price) as paysum
+		from trxnlog t LEFT JOIN
+		movie w ON t.`MediaID`=w.`MediaID`
+		<where>
+			<if test="filmName!=null and filmName!=''">
+				and w.name like CONCAT('%', #{filmName},'%')
+			</if>
+			<if test="paytime!=null and paytime != ''">
+				and substr(t.recordTime,1,10) = #{paytime}
+			</if>
+			<if test="starttime!=null and starttime != ''">
+				and substr(t.recordTime,1,10) >= #{starttime}
+			</if>
+			<if test="endtime!=null and endtime != ''">
+				and #{endtime} >= substr(t.recordTime,1,10)
+			</if>
+		</where>
+		group by w.name
+		order by w.`MediaID` desc
+	</select>
+	
+	<!-- 免费点播总数 -->
+	<select id="findFreeTotal" resultType="map" parameterType="com.guanglumedia.cms.order.entity.PurRelation">
+		SELECT ifnull(count(t.id),0) as totalpay 
+		from trxnlog t LEFT JOIN
+		movie w ON t.`MediaID`=w.`MediaID`
+		<where>
+			t.price = 0 
+			<if test="filmName!=null and filmName!=''">
+				and w.name like CONCAT('%', #{filmName},'%')
+			</if>
+			<if test="starttime!=null and starttime != ''">
+				and substr(t.recordTime,1,10) >= #{starttime}
+			</if>
+			<if test="endtime!=null and endtime != ''">
+				and #{endtime} >= substr(t.recordTime,1,10)
+			</if>
+		</where>
+	</select>
+	<!-- 付费点播总数 -->
+	<select id="findNotFreeTotal" resultType="map" parameterType="com.guanglumedia.cms.order.entity.PurRelation">
+		SELECT ifnull(count(t.id),0) as totalpay 
+		from trxnlog t LEFT JOIN
+		movie w ON t.`MediaID`=w.`MediaID`
+		<where>
+			t.price != 0 
+			<if test="filmName!=null and filmName!=''">
+				and w.name like CONCAT('%', #{filmName},'%')
+			</if>
+			<if test="starttime!=null and starttime != ''">
+				and substr(t.recordTime,1,10) >= #{starttime}
+			</if>
+			<if test="endtime!=null and endtime != ''">
+				and #{endtime} >= substr(t.recordTime,1,10)
+			</if>
+		</where>
+	</select>
+</mapper>	

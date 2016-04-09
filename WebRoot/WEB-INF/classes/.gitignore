@@ -1,0 +1,15 @@
+/INJECT-CQ.properties
+/INJECT-GX.properties
+/com/
+/database-jdbc.properties
+/ehcache.xml
+/epg.properties
+/localhost/
+/model_adi.xml
+/mybatis-config.xml
+/spring-datasource.xml
+/spring-mvc.xml
+/spring-quartz.xml
+/tomcat-log.properties
+/tomcat-rewrite.xml
+/velocity-config.properties

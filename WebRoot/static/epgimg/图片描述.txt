@@ -1,0 +1,7 @@
+x是影片图片标识
+
+152X83是首页列表小图    	x_list.jpg
+banner是首页大图        	x_banner.jpg
+140X200是分类和预告片图片       x_cate_preview.jpg
+109X155是用户记录的图片		x_usermanage.jsp
+244X331是影片详情图片           x_detail.jsp

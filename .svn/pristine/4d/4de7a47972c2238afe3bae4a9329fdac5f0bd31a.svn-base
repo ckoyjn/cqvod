@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.cms.movie.dao.MovieDao">
+	<resultMap id="movieMap" type="com.guanglumedia.cms.movie.entity.Movie" >
+		<result property="id" column="id"></result>
+		<result property="Identify" column="identify"></result>
+		<result property="VodID" column="vodid"></result>
+		<result property="MediaID" column="mediaid"></result>
+		<result property="Name" column="name"></result>
+		<result property="eName" column="EName"></result>
+		<result property="Mins" column="mins"></result>
+		<result property="Rank" column="rank"></result>
+		<result property="Status" column="status"></result>
+		<result property="Price" column="price"></result>
+		<result property="Director" column="director"></result>
+		<result property="Actor" column="actor"></result>
+		<result property="Intro" column="intro"></result>
+		<result property="Score" column="score"></result>
+		<result property="productname" column="productname"></result>
+	</resultMap>
+	<select id="findMovieList" resultMap="movieMap">
+		SELECT m.*,p.name as productname from movie m left join product p on m.vodid = p.vodid
+		<where>
+			1=1 
+			<if test="Name != null and Name !=''">
+				and m.name like CONCAT('%', #{Name},'%')
+			</if>
+			<if test="Status != null and Status !=''">
+				and m.status  = #{Status}
+			</if>
+			<if test="Director != null and Director !=''">
+				and m.director  like CONCAT('%', #{Director},'%')
+			</if>
+			<if test="Actor != null and Actor !=''">
+				and m.actor   like CONCAT('%', #{Actor},'%')
+			</if>
+			<if test="Intro != null and Intro !=''">
+				and m.intro   like CONCAT('%', #{Intro},'%')
+			</if>
+			<if test="starttime !=null  and starttime !=''">
+				and substr(m.onlineTime,1,10) >= #{starttime}
+			</if>
+			<if test="endtime !=null  and endtime !=''">
+				and substr(m.onlineTime,1,10) <![CDATA[<=]]>#{endtime}
+			</if>
+			order by m.onlineTime desc ,m.downlineTime desc ,m.status desc,m.Rank,m.type desc
+		</where>
+	</select>
+	<select id="findCount" resultType="int">
+		select count(*) from movie m
+		<where>
+			1=1 
+			<if test="Name != null and Name !=''">
+				and m.name like CONCAT('%', #{Name},'%')
+			</if>
+			<if test="Status != null and Status !=''">
+				and m.status  = #{Status}
+			</if>
+			<if test="Director != null and Director !=''">
+				and m.director  like CONCAT('%', #{Director},'%')
+			</if>
+			<if test="Actor != null and Actor !=''">
+				and m.actor   like CONCAT('%', #{Actor},'%')
+			</if>
+			<if test="Intro != null and Intro !=''">
+				and m.intro   like CONCAT('%', #{Intro},'%')
+			</if>
+			<if test="starttime !=null  and starttime !=''">
+				and substr(m.onlineTime,1,10) >= #{starttime}
+			</if>
+			<if test="endtime !=null  and endtime !=''">
+				and substr(m.onlineTime,1,10)<![CDATA[<=]]> #{endtime}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getMovieById" resultMap="movieMap">
+		SELECT * FROM movie m 
+		where m.id=#{id}
+	</select>
+	
+	<insert id='addMovie' parameterType="com.guanglumedia.cms.movie.entity.Movie">
+		insert into movie (Identify,VodID,MediaID,Name,EName,Mins,Rank,Price,Director,Actor,Intro,Score,onlineTime,type) 
+		values (
+		#{Identify},#{VodID},#{MediaID},#{Name},#{eName},#{Mins},#{Rank},#{Price},#{Director},#{Actor},#{Intro},#{Score},now(),#{type}
+		)
+	</insert>
+	
+	<insert id='updateMovie' parameterType="com.guanglumedia.cms.movie.entity.Movie">
+		update movie 
+		<set>
+			<if test="Identify != null and Identify !=''">
+				identify=#{Identify,jdbcType=VARCHAR},
+			</if>
+			<if test="VodID != null and VodID !=''">
+				vodID=#{VodID,jdbcType=VARCHAR},
+			</if>
+			<if test="MediaID != null and MediaID !=''">
+				mediaID=#{MediaID,jdbcType=VARCHAR},
+			</if>
+			<if test="Name != null and Name !=''">
+				name=#{Name,jdbcType=VARCHAR},
+			</if>
+			<if test="eName != null and eName !=''">
+				EName=#{eName,jdbcType=VARCHAR},
+			</if>
+			<if test="Mins != null and Mins !=''">
+				mins=#{Mins,jdbcType=VARCHAR},
+			</if>
+			<if test="Rank != null and Rank !=''">
+				rank=#{Rank,jdbcType=VARCHAR},
+			</if>
+			<if test="Status != null and Status !=''">
+				status=#{Status,jdbcType=VARCHAR},
+			</if>
+			<if test="Price != null and Price !=''">
+				price=#{Price,jdbcType=VARCHAR},
+			</if>
+			<if test="Director != null and Director !=''">
+				director=#{Director,jdbcType=VARCHAR},
+			</if>
+			<if test="Actor != null and Actor !=''">
+				actor=#{Actor,jdbcType=VARCHAR},
+			</if>
+			<if test="Intro != null and Intro !=''">
+				intro=#{Intro,jdbcType=VARCHAR},
+			</if>
+			<if test="Score != null and Score !=''">
+				score=#{Score,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null and type !=''">
+                type=#{type,jdbcType=VARCHAR},
+            </if>
+			<if test="playurl != null and playurl !=''">
+                playurl=#{playurl,jdbcType=VARCHAR},
+            </if>
+            <if test="onlineTime != null and onlineTime !=''">
+                onlineTime=#{onlineTime,jdbcType=VARCHAR},
+            </if>
+                downlineTime=now(),
+		</set>
+		<where>
+			id=#{id}
+		</where>
+	</insert>
+	<delete id="delMovie" parameterType="String">
+		delete from movie where id=#{id}
+	</delete>
+	<select id="findAllMovie" resultMap="movieMap">
+		select * from movie
+	</select>
+	<select id="findPrice" parameterType="String" resultType="String">
+	 select price from product where vodid=#{vodID}
+	</select>
+	<select id="findRank" parameterType="String" resultType="int">
+		select count(rank) from movie 
+		<where>
+		rank=#{rank}
+		<if test="id!='0'">
+		and id!=#{id}
+		</if>
+		</where>
+	</select>
+	<select id="checkMediaID" parameterType="String" resultType="int">
+	  select count(*) from movie where MediaID=#{mediaID}
+	 <if test="id!='0'">
+		and id!=#{id}
+	 </if>
+	</select>
+	
+	<select id="findRecommend" parameterType="String" resultType="int">
+	 	select count(1) from recommend where objectid = #{id} and objecttype=0 and status=1;
+	</select>
+	
+	<select id="findOrder" parameterType="String" resultType="int">
+	 	select count(1) from trxnlog where DATE_ADD(recordtime,INTERVAL 2 DAY) > #{today} and mediaid=(select mediaid from movie where id=#{id})
+	</select>
+	<select id="getExistsIdentifies" resultType="String">
+		select identify from movie
+	</select>
+	
+</mapper>	

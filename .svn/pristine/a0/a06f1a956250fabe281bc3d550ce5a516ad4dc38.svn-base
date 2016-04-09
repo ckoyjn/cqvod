@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.api.dao.WatchRestDao">
+	
+	<insert id="addWatchRecord"  parameterType="net.sf.json.JSONObject">
+		insert into watchrecord(userId,programeId,playTime) values(#{smartcardid},#{pid},#{watchtime})
+	</insert>
+	
+	<select id="getwatchRecordByUserId" parameterType="String" resultType="map" >
+		select m.name, m.id,m.identify from watchrecord w, movie m where m.id=w.programeId and userId=#{smartcardid} 
+	</select>
+	
+	<select id="findCount" parameterType="String" resultType="int">
+		select count(1) from watchrecord where userId=#{smartcardid}
+	</select>
+
+</mapper>

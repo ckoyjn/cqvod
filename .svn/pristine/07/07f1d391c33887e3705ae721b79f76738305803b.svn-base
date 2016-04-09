@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.cms.actsrecommend.dao.ActsrecommendDao">
+	<resultMap id="ActsrecommendMap"     type="com.guanglumedia.cms.actsrecommend.entity.Actsrecommend">
+		<result property="id"           column="id"></result>
+		<result property="title"        column="title"></result>
+		<result property="identity"     column="identity"></result>
+		<result property="imgUrl"       column="imgUrl"></result>
+		<result property="moduleCount"  column="moduleCount"></result>
+		<result property="contentCount" column="contentCount"></result>
+		<result property="moduleTitles" column="moduleTitles"></result>
+		<result property="status"       column="status"></result>
+		<result property="createTime"   column="createTime"></result>
+		<result property="updateTime"   column="updateTime"></result>
+	</resultMap>
+	
+	
+	<select id="findActsrecommendList" resultType="com.guanglumedia.cms.actsrecommend.entity.Actsrecommend" parameterType="map">
+	   select * from acts_recommend 
+	   <where>
+	   <if test="title!=null and title!=''">
+	   title like concat('%',#{title},'%')
+	   </if>
+	   </where>
+	   </select>
+	   
+	   
+	   
+	   <select id="findCount" resultType="int" parameterType="map">
+	   select count(*) from acts_recommend
+	   <where>
+       <if test="title!=null and title!=''">
+       name like concat('%',#{name},'%')
+       </if>
+       <if test="status!=null and status!=''">
+       and status=#{status}
+       </if>
+       </where>
+	</select>
+	
+	<select id="getActsrecommendById" parameterType="int" resultType="com.guanglumedia.cms.actsrecommend.entity.Actsrecommend">
+	   select * from acts_recommend where id=#{id}
+	</select>
+	
+	<insert id='updateActsrecommend' parameterType="com.guanglumedia.cms.actsrecommend.entity.Actsrecommend">
+		update acts_recommend
+		<set>
+			<if test="title != null and title !=''">
+				title=#{title,jdbcType=VARCHAR},
+			</if>
+			<if test="identity != null and identity !=''">
+				identity=#{identity,jdbcType=VARCHAR},
+			</if>
+			<if test="imgUrl != null and imgUrl !=''">
+				imgUrl=#{imgUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="moduleCount != null and moduleCount !=''">
+				moduleCount=#{moduleCount,jdbcType=VARCHAR},
+			</if>
+			<if test="contentCount != null and contentCount !=''">
+				contentCount=#{contentCount,jdbcType=VARCHAR},
+			</if>
+			<if test="moduleTitles != null and moduleTitles !=''">
+				moduleTitles=#{moduleTitles,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null and status !=''">
+				status=#{status,jdbcType=VARCHAR},
+			</if>
+		</set>
+		<where>
+			id=#{id}
+		</where>
+	</insert>
+	
+	<insert id='addActsrecommend' parameterType="com.guanglumedia.cms.actsrecommend.entity.Actsrecommend">
+		insert into dynamic_content(title,identity,imgUrl,moduleCount,contentCount,moduleTitles,status) 
+		values (
+		#{title},#{identity},#{imgUrl},#{contentCount},#{moduleTitles},#{status}
+		)
+	</insert>
+	
+	<delete id="delActsrecommend" parameterType="int">
+		delete from dynamic_content where id=#{id}
+	</delete>
+</mapper>	

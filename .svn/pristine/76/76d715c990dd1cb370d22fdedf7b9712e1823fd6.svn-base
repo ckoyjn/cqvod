@@ -1,0 +1,7 @@
+ftpService=172.18.2.50
+ftpPort=21
+username=cmsuser
+password=123
+provider_id=<Provider_ID>sfyx</Provider_ID>
+adi_path=data/ADI
+inject_url=http://192.168.13.141:35100/cms/services/WebPublish

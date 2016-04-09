@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.cms.movie.dao.InjectDao">
+	<resultMap id="InjectMap" type="com.guanglumedia.cms.movie.entity.Inject" >
+		<result property="id" column="id"></result>
+		<result property="videoid" column="videoid"></result>
+		<result property="videoname" column="videoname"></result>
+		<result property="videotype" column="videotype"></result>
+		<result property="status" column="status"></result>
+		<result property="url" column="url"></result>
+		<result property="live" column="live"></result>
+		<result property="filetype" column="filetype"></result>
+		<result property="actiontime" column="actiontime"></result>
+		<result property="preview" column="preview"></result>
+		<result property="movie" column="movie"></result>
+	</resultMap>
+	<select id="findInjectList" resultMap="InjectMap">
+		SELECT m.*,IF(m.videotype=0,p.name,mv.name ) as videoname FROM Inject m LEFT JOIN preview p ON m.videoid = p.id LEFT JOIN movie mv ON m.videoid = mv.id
+		<where>
+			1=1 
+			<if test="videoid != null and videoid !=''">
+				and m.videoid like CONCAT('%', #{videoid},'%')
+			</if>
+			<if test="url != null and url !=''">
+				and m.url like CONCAT('%', #{url},'%')
+			</if>
+			<if test="videoname != null and videoname !=''">
+                and (mv.name like CONCAT('%', #{videoname},'%') or p.name like CONCAT('%', #{videoname},'%'))
+            </if>
+			<if test="status != null and status !=''">
+				and m.status  = #{status}
+			</if>
+			<if test="videotype != null and videotype !=''">
+				and m.videotype  = #{videotype}
+			</if>
+			<if test="live != null and live !=''">
+				and m.live  = #{live}
+			</if>
+			<if test="filetype != null and filetype !=''">
+				and m.filetype  like CONCAT('%',  #{filetype},'%')
+			</if>
+			<if test="actiontime != null and actiontime !=''">
+				and m.actiontime  = #{actiontime}
+			</if>
+		</where>
+	</select>
+	<select id="findCount" resultType="int">
+        SELECT count(*) FROM Inject m LEFT JOIN preview p ON m.videoid = p.id LEFT JOIN movie mv ON m.videoid = mv.id
+		<where>
+			1=1 
+			<if test="videoid != null and videoid !=''">
+				and m.videoid like CONCAT('%', #{videoid},'%')
+			</if>
+			<if test="url != null and url !=''">
+				and m.url like CONCAT('%', #{url},'%')
+			</if>
+			<if test="videoname != null and videoname !=''">
+                and mv.name like CONCAT('%', #{videoname},'%') or p.name like CONCAT('%', #{videoname},'%')
+            </if>
+			<if test="status != null and status !=''">
+				and m.status  = #{status}
+			</if>
+			<if test="videotype != null and videotype !=''">
+				and m.videotype  = #{videotype}
+			</if>
+			<if test="live != null and live !=''">
+				and m.live  = #{live}
+			</if>
+			<if test="filetype != null and filetype !=''">
+				and m.filetype  like CONCAT('%',  #{filetype},'%')
+			</if>
+			<if test="actiontime != null and actiontime !=''">
+				and m.actiontime  = #{actiontime}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getInjectById" resultMap="InjectMap">
+		SELECT m.*,IF(m.videotype=0,p.name,mv.name ) videoname,p.mediaID as preview ,mv.mediaID as movie FROM Inject  m LEFT JOIN preview p ON m.videoid = p.id LEFT JOIN movie mv ON m.videoid = mv.id  where m.id=#{id}
+	</select>
+	
+	<insert id='addInject' parameterType="com.guanglumedia.cms.movie.entity.Inject">
+		insert into Inject (videoid,videotype,status,url,live,filetype,actiontime) 
+		values (
+			#{videoid},#{videotype},#{status},#{url},#{live},#{filetype},now()
+		)
+	</insert>
+	<insert id='updateInject' parameterType="com.guanglumedia.cms.movie.entity.Inject">
+		update Inject
+		<set>
+			<if test="videoid != null and videoid !=''">
+				videoid=#{videoid,jdbcType=VARCHAR},
+			</if>
+			<if test="videotype != null and videotype !=''">
+				videotype=#{videotype,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null and status !=''">
+				status=#{status,jdbcType=VARCHAR},
+			</if>
+			<if test="url != null and url !=''">
+				url=#{url,jdbcType=VARCHAR},
+			</if>
+			<if test="live != null and live !=''">
+				live=#{live,jdbcType=VARCHAR},
+			</if>
+			<if test="filetype != null and filetype !=''">
+				filetype=#{filetype,jdbcType=VARCHAR},
+			</if>
+			<if test="actiontime != null and actiontime !=''">
+				actiontime=#{actiontime,jdbcType=VARCHAR},
+			</if>
+		</set>
+		<where>
+			id=#{id}
+		</where>
+	</insert>
+	<delete id="delInject" parameterType="String">
+		delete from Inject where id=#{id}
+	</delete>
+	<delete id="DelInjectByMovieId" parameterType="int" >
+		delete Inject where videotype=1 and videoid=#{id}
+	</delete>
+	<select id="getInjectByMovieId" parameterType="int" resultType="int">
+		select count(id) from Inject where videotype=1 and videoid=#{videoid}
+	</select>
+</mapper>	

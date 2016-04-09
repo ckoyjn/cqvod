@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.cms.recommend.dao.CmsRecommendDao">
+
+	<select id="findRecommendList" resultType="map" parameterType="map">
+		select SQL_CALC_FOUND_ROWS * from recommend
+		<where>
+		<if test="name!=null and name!=''">
+			and name like CONCAT('%', #{name},'%')
+		</if>
+		<if test="status!=null and status!=''">
+			and status=#{status}
+		</if>
+		</where>
+		order by onlineTime desc
+	</select>
+	<select id="findCount" resultType="int">
+		select FOUND_ROWS()
+	</select>
+	<select id="findAllMovie" resultType="map">
+		select * from movie where status=1
+	</select>
+	<select id="findAllSpecil" resultType="map">
+		select * from cms_special where status=1
+	</select>
+	
+
+	<update id="updateRecommend" parameterType="map">
+		update recommend set
+		name=#{name},objectid=#{objectid},objecttype=#{objecttype},
+		`desc`=#{desc},Identify=#{identify},status=#{status} 
+		<if test="status==1">,onlinetime=now()</if>
+		  where
+		id=#{RecommendID}
+	</update>
+	 <select id="findObjectNameByType" resultType="map" parameterType="map">
+	     <if test="objecttype==1">
+	     select id,name from cms_special where status=1 
+	     </if>
+	     <if test="objecttype==0">
+	     select id,name from movie where status=1 
+	     </if>
+	 </select>
+     <delete id="delRecommend" parameterType="int">
+     delete from recommend where id=#{id}
+     </delete>
+     <insert id="addRecommend" parameterType="map">
+        insert into recommend
+        (name,objectid,objecttype,Identify
+        <if test="status==1">,onlinetime</if>
+        ,`desc`,status)value
+        (#{name},#{objectid},#{objecttype},#{identify}
+        <if test="status==1">,now()</if>
+        ,#{desc},#{status})
+    </insert>
+    
+     <select id="getRecommendById" resultType="map" parameterType="map">
+     <if test="objecttype==0">
+         select r.id,r.name,r.objecttype,r.objectid,r.Identify,r.desc,r.status,m.Name as objectName
+          from recommend r left join movie m on r.objectid=m.id  where r.id=#{id} and m.status=1
+     </if>
+     <if test="objecttype==1">
+         select r.id,r.name,r.objecttype,r.objectid,r.Identify,r.desc,r.status,s.name as objectName
+          from recommend r left join cms_special s on r.objectid=s.id  where r.id=#{id} and s.status=1
+     </if>
+     </select>
+     
+     <select id="findobjectIdentify" resultType="String" parameterType="map">
+     <if test="objecttype==0">
+         select Identify
+          from  movie where id=#{objectid} 
+     </if>
+     <if test="objecttype==1">
+         select Identify
+          from  cms_special where id=#{objectid} 
+     </if>
+     </select>
+     
+     
+</mapper>	

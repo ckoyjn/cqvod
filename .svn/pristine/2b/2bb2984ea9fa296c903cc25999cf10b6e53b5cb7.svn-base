@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.cms.analysis.dao.AnalysisDao">
+	<resultMap id="AccessCategory" type="com.guanglumedia.cms.analysis.entity.AccessCategory" >
+	<result property="action" column="action"></result>
+	<result property="name" column="desc"></result>
+	<result property="starttime" column="starttime"></result>
+	<result property="endtime" column="endtime"></result>
+	<result property="counter" column="counter"></result>
+	<result property="maxtime" column="maxtime"></result>
+	
+	<result property="userId" column="userId"></result>
+	<result property="mediaId" column="MediaId"></result>
+	<result property="recordTime" column="recordTime"></result>
+	<result property="type" column="type"></result>
+	<result property="showtype" column="showtype"></result>
+	<result property="medianame" column="medianame"></result>
+	</resultMap>
+	
+	<select id="findAllAccessCategoryList" resultMap="AccessCategory">
+			SELECT ac.*,COUNT(ar.id) as counter,MAX(recordTime) as maxtime FROM   accessrecord ar LEFT JOIN accesscategory ac ON ac.action=ar.action 
+			<where>
+			<![CDATA[
+				ar.recordTime > #{starttime} AND ar.recordTime <= #{endtime}
+			]]>
+				<if test="action != null and action !=''">
+						and ar.action =#{action}
+				</if>
+				<if test="userId != null and userId !=''">
+						and ar.userId =#{userId}
+				</if>
+				<if test="mediaId != null and mediaId !=''">
+						and ar.mediaId =#{mediaId}
+				</if>
+				<if test="type != null and type !=''">
+						and ar.type =#{type}
+				</if>
+			</where>
+			GROUP BY ar.action
+	</select>
+	<select id="findAccessDate" resultMap="AccessCategory">
+			SELECT 
+			  ar.*,
+			  ac.desc,
+			  IF(ar.`specialid` IS NOT NULL,cs.name,IF(ar.`cateid` IS NOT NULL,cc.name,IF(ar.`pid` IS NOT NULL,m.name,p.name)))
+			  AS medianame
+			FROM
+			  accessrecord ar 
+			  LEFT JOIN accesscategory ac 
+			    ON ac.action = ar.action 
+			  LEFT JOIN cms_special cs ON ar.`specialid`=cs.id 
+			  LEFT JOIN cms_category cc ON ar.`cateid`=cc.id 
+			  LEFT JOIN movie m ON ar.`pid`=m.id 
+			  LEFT JOIN preview p ON ar.`previewid`=p.id
+		<where>
+		<![CDATA[
+			ar.recordTime > #{starttime} AND ar.recordTime < #{endtime}
+		]]>
+		<if test="action != null and action !=''">
+				and ar.action =#{action}
+		</if>
+		<if test="userId != null and userId !=''">
+				and ar.userId =#{userId}
+		</if>
+		<if test="mediaId != null and mediaId !=''">
+				and ar.mediaId =#{mediaId}
+		</if>
+		<if test="type != null and type !=''">
+				and ar.type =#{type}
+		</if>
+		 order by ar.recordTime desc
+		</where>
+	</select>
+	<select id="findCount" resultType="int">
+			SELECT count(*) FROM   accessrecord ar  
+		<where>
+		<![CDATA[
+			ar.recordTime > #{starttime} AND ar.recordTime < #{endtime}
+		]]>
+		<if test="action != null and action !=''">
+				and ar.action =#{action}
+		</if>
+		<if test="userId != null and userId !=''">
+				and ar.userId =#{userId}
+		</if>
+		<if test="mediaId != null and mediaId !=''">
+				and ar.mediaId =#{mediaId}
+		</if>
+		<if test="type != null and type !=''">
+				and ar.type =#{type}
+		</if>
+		</where>
+	</select>
+	<select id="getRegGraphData" resultMap="AccessCategory">
+		select  DATE_FORMAT(v.recordTime, "%d-%b-%Y") as recordTime, count(*) as counter from accessrecord v
+		WHERE v.action=#{action}  and  (v.recordTime BETWEEN #{starttime} and #{endtime} )
+		GROUP BY DATE_FORMAT(v.recordTime, "%d-%b-%Y")
+	</select>
+	<select id="getRegGraphDataDist" resultMap="AccessCategory">
+		select  DATE_FORMAT(v.recordTime, "%d-%b-%Y") as recordTime, count(DISTINCT userid) as counter from accessrecord v
+		WHERE v.action=#{action} and ( v.recordTime BETWEEN #{starttime} and #{endtime} )
+		GROUP BY DATE_FORMAT(v.recordTime, "%d-%b-%Y")
+	</select>
+	
+	<select id="exportAccessCategoryList" resultType="map">
+            SELECT ac.*,COUNT(ar.id) as counter,MAX(recordTime) as maxtime FROM   accessrecord ar LEFT JOIN accesscategory ac ON ac.action=ar.action 
+            <where>
+            <![CDATA[
+                ar.recordTime > #{starttime} AND ar.recordTime < #{endtime}
+            ]]>
+                <if test="action != null and action !=''">
+                        and ar.action =#{action}
+                </if>
+                <if test="userId != null and userId !=''">
+                        and ar.userId =#{userId}
+                </if>
+                <if test="mediaId != null and mediaId !=''">
+                        and ar.mediaId =#{mediaId}
+                </if>
+                <if test="type != null and type !=''">
+                        and ar.type =#{type}
+                </if>
+            </where>
+            GROUP BY ar.action
+    </select>
+    
+	<!-- 新增用户量 -->
+	<select id="findNewUserAccessCategory" resultMap="AccessCategory">
+		<![CDATA[
+		SELECT 
+		  COUNT(DISTINCT userId) as counter,
+		  MAX(recordTime) as maxtime 
+		FROM
+		  accessrecord 
+		WHERE 
+		recordTime >= #{starttime} AND recordTime < #{endtime} 
+		  AND userId NOT IN 
+		  (SELECT DISTINCT 
+			userId 
+		  FROM
+			accessrecord 
+		  WHERE recordTime < #{starttime})
+		]]>
+	</select>
+	<!-- 累计用户量 -->
+	<select id="findAllUserAccessCategory" resultMap="AccessCategory">
+		<![CDATA[ SELECT COUNT(DISTINCT userId) AS counter, MAX(recordTime) AS maxtime FROM accessrecord where recordTime < #{endtime} ]]> 
+	</select>
+	<!-- 使用用户量 -->
+	<select id="findUseUserAccessCategory" resultMap="AccessCategory">
+		<![CDATA[
+		SELECT 
+		  COUNT(DISTINCT userId) AS counter,
+		  MAX(recordTime) AS maxtime 
+		FROM
+		  accessrecord 
+		WHERE recordTime >= #{starttime} AND recordTime < #{endtime} 
+		]]>
+	</select>
+	<!-- 点播用户量 -->
+	<select id="findDemandUserAccessCategory" resultMap="AccessCategory">
+		<![CDATA[
+		SELECT
+		  COUNT(DISTINCT userId) AS counter,
+		  MAX(recordTime) AS maxtime 
+		FROM
+		  accessrecord
+		WHERE recordTime >= #{starttime} AND recordTime < #{endtime} AND ACTION IN (10,17)
+		]]>
+	</select>
+</mapper>

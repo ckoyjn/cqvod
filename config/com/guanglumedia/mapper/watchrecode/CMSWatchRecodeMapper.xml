@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.cms.watchrecode.dao.CMSWatchRecodeDao">
+	
+	<select id="getCMSWatchRecodeList" parameterType="com.guanglumedia.cms.watchrecode.entity.CMSWatchRecode" resultType="com.guanglumedia.cms.watchrecode.entity.CMSWatchRecode">
+	   select w.id,m.name pname,w.userId, date_format(w.playTime,'%Y-%m-%d %T') playTime
+	   from watchrecord w join movie m on w.programeId=m.id
+	   where 1=1
+	   <if test="pname!=null">
+	       and m.name like concat("%",#{pname},"%")
+	   </if>
+	</select>
+	<select id="getCMSWatchRecodeListCount" resultType="int" parameterType="com.guanglumedia.cms.watchrecode.entity.CMSWatchRecode">
+	   select count(w.id)
+       from watchrecord w join movie m on w.programeId=m.id
+       where 1=1
+       <if test="pname!=null">
+           and m.name like concat("%",#{pname},"%")
+       </if>
+	</select>
+</mapper>

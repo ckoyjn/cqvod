@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.api.dao.SubjectDao">
+	<resultMap type="com.guanglumedia.api.entity.CmsSpecial" id="CmsSpecial">
+		<id property="id" column="id"/>
+		<result  property="name" column="name"/>
+		<result  property="identify" column="identify"/>
+		<result  property="movieIDs" column="movieIDs"/>
+		<result  property="movieNames" column="movieNames"/>
+		<result  property="status" column="status"/>
+	</resultMap>
+
+	<select id="getSubjectById" parameterType="net.sf.json.JSONObject" resultMap="CmsSpecial">
+		select s.id,s.identify,s.movieIDs 
+		from cms_special s 
+		where s.`status`=1 and s.id=#{id}
+	</select>
+	
+	<select id="findAllSubject" resultMap="CmsSpecial">
+		select * from cms_special s 
+		where s.`status`=1
+	</select>
+	
+</mapper>

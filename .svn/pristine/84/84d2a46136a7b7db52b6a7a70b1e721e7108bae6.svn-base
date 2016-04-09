@@ -1,0 +1,9 @@
+driverClassName=com.mysql.jdbc.Driver
+url=jdbc:mysql://192.168.88.203:3306/cqvod?autoReconnect=true&useUnicode=true&characterEncoding=utf8
+username=root
+password=123456
+maxPoolSize=200
+minPoolSize=3
+initialPoolSize=5
+maxIdleTime=30
+

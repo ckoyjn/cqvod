@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.cms.card.dao.CardDao">
+ <select id="findcardepklist" resultType="map" parameterType="com.guanglumedia.cms.card.entity.CardEpk">
+ select SQL_CALC_FOUND_ROWS epkId,epkName,epkNum,epkDateStart,epkDateEnd,epkPerval,epkRemark,type,epkStatus
+   from epg_epk
+   <where>
+   <if test="epkId!=null">
+   epkId=#{epkId}
+   </if>
+   </where>
+  order by epkDateStart desc
+ </select>
+<select id="findCount" resultType="int">
+        select FOUND_ROWS()
+    </select>
+ <select id="createBatchkey" resultType="int" parameterType="java.lang.String">
+      select epk_nextval(#{epkBatchkey});
+   </select>
+   <insert id="addCardEpk" parameterType="com.guanglumedia.cms.card.entity.CardEpk" >
+   insert into epg_epk (epkId,epkName,type,epkDateEnd,epkPerval,epkNum,epkDateStart
+   <if test="epkRemark!=null and epkRemark!=''">,epkRemark</if>
+   )values
+   (#{epkId},#{epkName},#{type},#{epkDateEnd},#{epkPerval},#{epkNum},now()
+   <if test="epkRemark!=null and epkRemark!=''">,#{epkRemark}</if>
+   )
+   </insert>
+   <insert id="insertCardNum" parameterType="java.util.List">
+      insert into epg_evcn(evcnId,epkId) values
+      <foreach collection="list" item="item" index="index" separator="," >
+        (#{item.evcnId},#{item.epkId})
+      </foreach>
+   </insert>
+   
+   <!--  更新观影码为已激活-->
+   <update id="updateEpkStatus" parameterType="int">
+   update epg_epk set epkStatus=2  where epkId=#{epkId}
+   </update>
+   <!-- 次卡使用信息 -->
+   <select id="finduseinfolist" resultType="map" parameterType="com.guanglumedia.cms.card.entity.CardEpk">
+   select SQL_CALC_FOUND_ROWS 
+   e.evcnId,e.operateStatus,e.epkId,e.evcnUsetime
+   from epg_evcn e
+    <where>
+    <if test="evcnId!=null">
+       e.evcnId=#{evcnId}
+    </if>
+    <if test="epkId!=null">
+       and e.epkId=#{epkId}
+    </if>
+    </where>
+   </select>
+   <select id="findUseinfoCount" resultType="int">
+        select FOUND_ROWS()
+    </select>
+   
+   <!-- 交易查询 -->
+   <select id="findRecordQuerylist" resultType="map" parameterType="com.guanglumedia.cms.card.entity.CardEpk">
+     SELECT t.id,t.`userId`,t.`recordtime`, DATE_ADD(t.`recordtime`,INTERVAL 1 DAY) AS validtime,
+     t.`type`,t.`evcnId`,e.status,p.name AS productname,w.Name AS filmName,p.price ,e.`status` FROM trxnlog t LEFT JOIN product p ON
+        t.`productId`=p.`vodid`
+        LEFT JOIN
+        movie w ON t.`MediaID`=w.`MediaID` LEFT JOIN cms_evcn e ON e.`evcnId`=t.`evcnId` WHERE t.type=1
+        <if test="userId!=null">
+        and t.userId like concat('%',#{userId},'%')
+        </if>
+        <if test="id!=null">
+        and t.id=#{id}
+        </if>
+        
+   </select>
+   <select id="findRecordQueryCount" resultType="int">
+        select FOUND_ROWS()
+    </select>
+    <!-- 禁用卡，正常卡 -->
+    <update id="updateCardStatus" parameterType="com.guanglumedia.cms.card.entity.CardEpk">
+    update cms_evcn set 
+    <if test="status==0">
+    status=0
+    </if>
+    <if test="status==1">
+    status=1
+    </if>
+    where evcnId=#{evcnId}
+    </update>
+    
+    <select id="exportcardepk" parameterType="java.util.List" resultType="hashmap">
+      select evcnId,epkId from epg_evcn  
+      where epkId in
+        <foreach collection="list" item="item" index="index"
+            separator="," open="(" close=")">
+            #{item}
+        </foreach> 
+      </select>
+      
+    <update id="updateExportEpkStatus" parameterType="java.util.List">
+      update epg_epk set epkStatus=3  where epkId in
+      (<foreach collection="list" item="item" index="index" separator=",">
+      #{item}
+      </foreach>)
+      
+    </update>
+</mapper>	

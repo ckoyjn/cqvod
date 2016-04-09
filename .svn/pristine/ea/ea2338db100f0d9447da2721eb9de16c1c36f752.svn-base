@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://soap.mediaasset.dtvmw.huawei.com" xmlns:intf="http://soap.mediaasset.dtvmw.huawei.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://soap.mediaasset.dtvmw.huawei.com">
+<!--WSDL created by Apache Axis version: 1.3
+Built on Oct 05, 2005 (05:23:37 EDT)-->
+ <wsdl:types>
+  <schema xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://soap.mediaasset.dtvmw.huawei.com">
+   <element name="publish">
+    <complexType>
+     <sequence>
+      <element name="ftpPath" type="xsd:string"/>
+      <element name="adiFile" type="xsd:string"/>
+      <element name="detailParams" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="publishResponse">
+    <complexType>
+     <sequence>
+      <element name="publishReturn" type="impl:OperateResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <complexType name="OperateResult">
+    <sequence>
+     <element name="returnCode" type="xsd:int"/>
+     <element name="message" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="publishResponse">
+
+      <wsdl:part element="impl:publishResponse" name="parameters"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="publishRequest">
+
+      <wsdl:part element="impl:publish" name="parameters"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="WebPublish">
+
+      <wsdl:operation name="publish">
+
+         <wsdl:input message="impl:publishRequest" name="publishRequest"/>
+
+         <wsdl:output message="impl:publishResponse" name="publishResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="WebPublishSoapBinding" type="impl:WebPublish">
+
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="publish">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="publishRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="publishResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="WebPublishService">
+
+      <wsdl:port binding="impl:WebPublishSoapBinding" name="WebPublish">
+
+         <wsdlsoap:address location="http://localhost/cqvod/services/WebPublish"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

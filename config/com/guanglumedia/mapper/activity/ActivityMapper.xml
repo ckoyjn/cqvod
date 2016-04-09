@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.cms.activity.dao.ActivityDao">
+	
+	<select id="getActivityList" resultType="com.guanglumedia.cms.activity.entity.Activity">
+	   select * from cms_activity order by rank,id desc
+	</select>
+	<select id="getActivityCount" resultType="int">
+	   select count(0) from cms_activity
+	</select>
+	
+	<select id="getActivityById" parameterType="int" resultType="com.guanglumedia.cms.activity.entity.Activity">
+	   select * from cms_activity where id=#{id}
+	</select>
+	<insert id="insertActivity" parameterType="com.guanglumedia.cms.activity.entity.Activity">
+	   insert into cms_activity(name,identify,status,rank) values(#{name},#{identify},#{status},#{rank})
+	</insert>
+	<select id="hasOrderby" resultType="int">
+		SELECT count(*) FROM cms_activity  where rank=#{orderby}
+		<if test="id!=null">
+			id!=#{id}
+		</if>
+	</select>
+	
+	<delete id="deleteActivityByIds" >
+	   delete from cms_activity 
+	   where id in 
+	   <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">
+	   #{id}
+	   </foreach>
+	</delete>
+	
+	<update id="updateActivity" parameterType="com.guanglumedia.cms.activity.entity.Activity">
+	   update cms_activity
+	   <set>
+	       <if test="name != null">name=#{name},</if>
+	       <if test="rank != null">rank=#{rank},</if>
+	       <if test="status != null">status=#{status},</if>
+	       <if test="identify != null">identify=#{identify}</if>
+	   </set>
+	   where id=#{id}
+	</update>
+</mapper>

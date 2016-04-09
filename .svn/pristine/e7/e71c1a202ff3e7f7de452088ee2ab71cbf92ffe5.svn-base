@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.cms.admin.dao.GroupDao">
+	<resultMap id="groupMap" type="com.guanglumedia.cms.admin.entity.Group" >
+		<result property="id" column="id"></result>
+		<result property="GroupName" column="groupname"></result>
+		<result property="Status" column="status"></result>
+		<result property="CreateTime" column="createtime"></result>
+	</resultMap>
+	<select id="findGroupList" resultMap="groupMap">
+		SELECT * from cms_group cg
+		<where>
+			1=1 
+			<if test="GroupName != null and GroupName !=''">
+				and cg.groupname like CONCAT('%', #{GroupName},'%')
+			</if>
+			<if test="Status != null and Status !=''">
+				and cg.status  = #{Status}
+			</if>
+		</where>
+	</select>
+	<select id="findCount" resultType="int">
+		select count(*) from cms_group cg
+			<where>
+			1=1 
+			<if test="GroupName != null and GroupName !=''">
+				and cg.groupname like CONCAT('%', #{GroupName},'%')
+			</if>
+			<if test="Status != null and Status !=''">
+				and cg.status  = #{Status}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getGroupById" resultMap="groupMap">
+		SELECT cg.id,cg.groupname,DATE_FORMAT(cg.createtime, '%Y-%m-%d %T') as createtime,cg.status 
+		FROM cms_group cg 
+		where cg.id=#{id}
+	</select>
+	
+	<insert id='addGroup' parameterType="com.guanglumedia.cms.admin.entity.Group">
+		insert into cms_group (groupname,status,createtime) values (
+		#{GroupName},#{Status},now()
+		)
+	</insert>
+	<insert id='updateGroup' parameterType="com.guanglumedia.cms.admin.entity.Group">
+		update cms_group 
+		<set>
+			<if test="GroupName != null and GroupName !=''">
+				groupname=#{GroupName,jdbcType=VARCHAR},
+			</if>
+			<if test="Status != null and Status !=''">
+				status=#{Status,jdbcType=VARCHAR},
+			</if>
+		</set>
+		<where>
+			id=#{id}
+		</where>
+	</insert>
+	<delete id="delGroup" parameterType="String">
+		delete from cms_group where id=#{id}
+	</delete>
+	<delete id="delteAllRoleByGroupID">
+		delete from cms_group_role where groupid=#{groupId}
+	</delete>
+	<insert id="batchupdateRoleByGroupId" >
+		insert into cms_group_role (groupid,roleid) values
+  		 <foreach collection="roles" item="r" index="indexb" separator=",">
+			(  #{id}, #{r} )
+		</foreach>
+	</insert>
+	
+	<select id="hasGroupName" resultType="int">
+		SELECT count(*) FROM cms_group  where groupname=#{groupName} 
+		<if test="id!=0">
+			and id !=#{id}
+		</if>
+	</select>
+	
+	<select id="findAllGroup" resultType="com.guanglumedia.cms.admin.entity.Group" >
+		select * from cms_group where status='1'
+	</select>
+</mapper>	

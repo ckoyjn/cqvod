@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.cms.admin.dao.RightDao">
+	<resultMap id="rightMap" type="com.guanglumedia.cms.admin.entity.Right" >
+		<result property="id" column="id"></result>
+		<result property="RightName" column="rightname"></result>
+		<result property="RightDesc" column="rightdesc"></result>
+		<result property="RightAction" column="rightaction"></result>
+	</resultMap>
+	<select id="findRightList" resultMap="rightMap">
+		SELECT * from cms_right
+		<where>
+			1=1 
+			<if test="RightName != null and RightName !=''">
+				and rightname like CONCAT('%', #{RightName},'%')
+			</if>
+			<if test="RightDesc != null and RightDesc !=''">
+				and rightdesc like CONCAT('%', #{RightDesc},'%')
+			</if>
+			<if test="RightAction != null and RightAction !=''">
+				and RightAction like CONCAT('%', #{RightAction},'%')
+			</if>
+		</where>
+	</select>
+	<select id="findCount" resultType="int">
+		select count(*) from cms_right
+		<where>
+			1=1 
+			<if test="RightName != null and RightName !=''">
+				and rightname like CONCAT('%', #{RightName},'%')
+			</if>
+			<if test="RightDesc != null and RightDesc !=''">
+				and rightdesc like CONCAT('%', #{RightDesc},'%')
+			</if>
+			<if test="RightAction != null and RightAction !=''">
+				and RightAction like CONCAT('%', #{RightAction},'%')
+			</if>
+		</where>
+	</select>
+	<select id="getRightById" resultMap="rightMap">
+		SELECT cg.id,cg.rightname,cg.rightdesc,cg.rightaction
+		FROM cms_right cg 
+		where cg.id=#{id}
+	</select>
+	
+	<insert id='addRight' parameterType="com.guanglumedia.cms.admin.entity.Right">
+		insert into cms_right (rightname,rightdesc,rightaction) values (
+		#{rightName},#{rightDesc},#{rightAction}
+		)
+	</insert>
+	<insert id='updateRight' parameterType="com.guanglumedia.cms.admin.entity.Right">
+		update cms_right 
+		<set>
+			<if test="RightName != null and RightName !=''">
+				rightname=#{RightName,jdbcType=VARCHAR},
+			</if>
+			<if test="RightDesc != null and RightDesc !=''">
+				rightdesc=#{RightDesc,jdbcType=VARCHAR},
+			</if>
+			<if test="RightAction != null and RightAction !=''">
+				rightaction=#{RightAction,jdbcType=VARCHAR},
+			</if>
+		</set>
+		<where>
+			id=#{id}
+		</where>
+	</insert>
+	<delete id="delRight" parameterType="String">
+		delete from cms_right where id=#{id}
+	</delete>
+	<select id='findAllRgihtByRoleId' resultType='int'>
+		select rightid from cms_role_right where roleid=#{id}
+	</select>
+	<select id='findAllRightList' resultMap='rightMap'>
+		SELECT * from cms_right
+	</select>
+	<select id="hasRightName" resultType="int">
+		SELECT count(*) FROM cms_right  where rightname=#{rightname} 
+		<if test="id!=0">
+			and id !=#{id}
+		</if>
+	</select>
+</mapper>	

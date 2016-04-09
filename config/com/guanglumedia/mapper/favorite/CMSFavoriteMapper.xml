@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.cms.favorite.dao.CMSFavoriteDao">
+	
+	<select id="getFavoriteList" parameterType="com.guanglumedia.cms.favorite.entity.CMSFavorite" resultType="com.guanglumedia.cms.favorite.entity.CMSFavorite">
+	   select f.id,m.id pid,m.name pname,f.createTime,f.smartcardid
+	   from favorite f join movie m on f.pid=m.id
+	   where 1=1
+	   <if test="pname != null">
+	       and m.name like concat("%",#{pname},"%")
+	   </if>
+	</select>
+	<select id="getFavoriteListCount" resultType="int" parameterType="com.guanglumedia.cms.favorite.entity.CMSFavorite">
+	   select count(f.id)
+       from favorite f join movie m on f.pid=m.id
+       where 1=1
+       <if test="pname != null">
+           and m.name like concat("%",#{pname},"%")
+       </if>
+	</select>
+	
+</mapper>

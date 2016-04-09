@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.api.dao.OrderRestDao">
+	<resultMap type="com.guanglumedia.api.entity.EpgEvcn" id="EpgEvcn">
+		<result  property="evcnid" column="evcnId"/>
+		<result  property="programeid" column="programeId"/>
+		<result  property="userid" column="userId"/>
+		<result  property="operateStatus" column="operateStatus"/>
+		<result  property="evcnOrderStatus" column="evcnOrderStatus"/>
+		<result  property="evcnGettime" column="evcnGettime"/>
+		<result  property="evcnOrderId" column="evcnOrderId"/>
+		<result  property="epkDateStart" column="epkDateStart"/>
+		<result  property="epkDateEnd" column="epkDateEnd"/>
+		<result  property="epkPerval" column="epkPerval"/>
+	</resultMap>
+	<insert id="addOrder" parameterType="net.sf.json.JSONObject">
+		<![CDATA[
+			insert into trxnlog (userid,productid,mediaid,recordtime,type,evcnid,price) values(#{smartcardid},(select vodid from movie where id=#{pid}),(select mediaid from movie where id=#{pid}),now(),#{type},#{evcnid},#{price})
+		]]>
+	</insert>
+	<select id="getEvcn" parameterType="String" resultMap="EpgEvcn">
+		<![CDATA[
+			SELECT ev.evcnId, ev.programeId, ev.userId,ev.operateStatus,ev.evcnOrderId, ev.evcnOrderStatus,ev.evcnGettime, ep.epkDateStart, ep.epkDateEnd,ep.epkPerval from epg_evcn ev LEFT JOIN epg_epk ep on ev.epkId=ep.epkId where ev.evcnid=#{evcnid}
+		]]>
+	</select>
+	
+	<update id="updateEvcn" parameterType="hashmap">
+		<![CDATA[
+			update epg_evcn set userid=#{smartcardid},programeId=#{pid}, evcnOrderStatus=#{evcnOrderStatus} where evcnid=#{evcnid}
+		]]>
+	</update>
+	
+	<insert id="addBossLog" parameterType="hashmap">
+		<![CDATA[
+			insert into bosslog (smartcardid,evcnid,amount,errcode,msg,type,recordtime) values(#{smartcardid},#{evcnid},#{amount},#{errcode},#{msg},#{type},#{CURDATE()})
+		]]>
+	</insert>
+	
+	<insert id="addOrderOuter" parameterType="hashmap">
+		<![CDATA[
+			insert into trxnlog (userid,productid,mediaid,recordtime,type,evcnid,price) values(#{smartcardid},(select vodid from movie where mediaid=#{mediaid}),#{mediaid},now(),#{type},#{evcnid},#{price})
+		]]>
+	</insert>
+	
+	<select id=""></select>
+	
+	<insert id="addPlayRecord" parameterType="hashmap">
+		<![CDATA[
+			
+			insert into accessrecord (userId, action,recordtime,pid,previewid) values(#{smartcardid},#{action},now(),#{pid},#{previewid})
+		]]>
+	</insert>
+	<select id="getProgrameId" parameterType="string" resultType="int">
+	   select id from movie where MediaID=#{mediaid}
+	</select>
+	<select id="getPreviewId" parameterType="string" resultType="int">
+	   select id from preview where MediaID=#{mediaid}
+	</select>
+	<insert id="addwatchrecord" parameterType="map">
+	   insert into watchrecord(userId,programeId,playTime)
+	   select #{smartcardid},#{programeId},now() from dual where not exists(select * from watchrecord where userId=#{smartcardid} and programeId=#{programeId})
+	</insert>
+</mapper>

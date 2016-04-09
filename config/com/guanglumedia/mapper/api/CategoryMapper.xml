@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.api.dao.CategoryRestDao">
+	<select id="getAllCategory" resultType="hashmap">
+		<![CDATA[
+			select id,name from cms_category where status=1 order by orderby limit 4
+		]]>
+	</select>
+
+	<select id="getCategoryMovie" parameterType="int" resultType="map">
+		<![CDATA[
+			select m.name,m.id,m.identify,m.price from cms_category_movie c left join movie m on c.movieid=m.id where c.categoryid=#{categoryid}
+		]]>
+	</select>
+
+	<select id="findCount" parameterType="int" resultType="int">
+		<![CDATA[
+			select count(1) from cms_category_movie c where c.categoryid=#{categoryid}
+		]]>
+	</select>
+
+
+	<select id="getRandomMovieByCategoryId" parameterType="net.sf.json.JSONObject"
+		resultType="map">
+		<![CDATA[
+			select DISTINCT m.name,m.id,m.identify from cms_category_movie c left join movie m on c.movieid=m.id where c.categoryid in (select categoryid from cms_category_movie where movieid=#{pid}) and m.id!=#{pid}
+		]]>
+	</select>
+	<select id="getHotMovie" resultType="map">
+		select id,identify,imgurl,name from movie where isHot=1
+	</select>
+	<select id="findHotMovieCount" resultType="int">
+		select count(*) from movie where isHot=1
+	</select>
+</mapper>

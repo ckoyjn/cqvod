@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.cms.admin.dao.UserDao">
+	<resultMap id="UserMap" type="com.guanglumedia.cms.admin.entity.User" >
+		<result property="ID" column="id"></result>
+		<result property="LoginName" column="loginname"></result>
+		<result property="Password" column="password"></result>
+		<result property="GroupID" column="groupid"></result>
+		<result property="GroupName" column="groupname"></result>
+		<result property="NickName" column="nickname"></result>
+		<result property="City" column="city"></result>
+		<result property="Sex" column="sex"></result>
+		<result property="Status" column="status"></result>
+		<result property="CreateTime" column="createtime"></result>
+		<result property="Phone" column="phone"></result>
+	</resultMap>
+	
+	<select id="findUserList" resultMap="UserMap">
+		SELECT cu.id,cu.loginname,cu.nickname,cu.sex,cu.groupid,cu.status,cu.city,cu.phone,DATE_FORMAT(cu.createtime, '%Y-%m-%d %T') as createtime,cg.groupname FROM cms_user cu LEFT JOIN cms_group cg ON cu.groupid=cg.id 
+		<where>
+			1=1 
+			<if test="LoginName != null and LoginName !=''">
+				and cu.loginname like CONCAT('%', #{LoginName},'%')
+			</if>
+			<if test="NickName != null and NickName !=''">
+				and cu.nickname like CONCAT('%', #{NickName},'%')
+			</if>
+			<if test="Sex != null and Sex !=''">
+				and cu.sex=#{Sex,jdbcType=VARCHAR}
+			</if>
+			<if test="GroupID != null and GroupID !=''">
+				and cu.groupid=#{GroupID,jdbcType=VARCHAR}
+			</if>
+			<if test="Status != null and Status !=''">
+				and cu.status=#{Status,jdbcType=VARCHAR}
+			</if>
+			<if test="City != null and City !=''">
+				and city=#{City,jdbcType=VARCHAR}
+			</if>
+			<if test="Phone != null and Phone !=''">
+				and phone like CONCAT('%', #{Phone},'%')
+			</if>
+		</where>
+	</select>
+	
+	<select id="getUserById" resultMap="UserMap">
+		SELECT cu.id,cu.loginname,cu.nickname,cu.sex,cu.groupid,cu.status,cu.city,cu.phone,DATE_FORMAT(cu.createtime, '%Y-%m-%d %T') as createtime,cg.groupname 
+		FROM cms_user cu LEFT JOIN cms_group cg ON cu.groupid=cg.id 
+		where cu.id=#{id}
+	</select>
+	
+	<select id="hasLoginName" resultType="int">
+		SELECT count(*) FROM cms_user  where loginname=#{loginname} 
+		<if test="id!=0">
+			and id!=#{id}
+		</if>
+	</select>
+	
+	<select id="findCount" resultType="int">
+		select FOUND_ROWS()
+	</select>
+	<insert id='addUser' parameterType="com.guanglumedia.cms.admin.entity.User">
+		insert into cms_user (loginname,password,nickname,sex,groupid,status,city,phone,createtime) values (
+		#{LoginName},#{Password},#{NickName},#{Sex},#{GroupID},#{Status},#{City},#{Phone},now()
+		)
+	</insert>
+	<insert id='UpdateUser' parameterType="com.guanglumedia.cms.admin.entity.User">
+		update cms_user 
+		<set>
+			<if test="loginName != null and loginName !=''">
+				loginname=#{loginName,jdbcType=VARCHAR},
+			</if>
+			<if test="nickName != null and nickName !=''">
+				nickname=#{nickName,jdbcType=VARCHAR},
+			</if>
+			<if test="sex != null and sex !=''">
+				sex=#{sex,jdbcType=VARCHAR},
+			</if>
+			<if test="groupID != null and groupID !=''">
+				groupid=#{groupID,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null and status !=''">
+				status=#{status,jdbcType=VARCHAR},
+			</if>
+			<if test="city != null and city !=''">
+				city=#{city,jdbcType=VARCHAR},
+			</if>
+			<if test="phone != null and phone !=''">
+				phone=#{phone,jdbcType=VARCHAR},
+			</if>
+		</set>
+		<where>
+			id=#{userID}
+		</where>
+	</insert>
+	<delete id="delUser" parameterType="String">
+		delete from cms_user where id=#{id}
+	</delete>
+	
+	<select id="getUserByGroupId" parameterType="int" resultType="int">
+		select count(id) from cms_user where groupid=#{groupid}
+	</select>
+</mapper>	

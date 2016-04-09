@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.cms.movie.dao.AssociateDao">
+	<resultMap id="associateMap" type="com.guanglumedia.cms.movie.entity.Associate" >
+		<result property="Movieid" column="Movieid"></result>
+		<result property="Previewid" column="Previewid"></result>
+		<result property="MovieName" column="MovieName"></result>
+		<result property="previewName" column="previewName"></result>
+		<result property="MediaID" column="MediaID"></result>
+	</resultMap>
+	<select id="findAssociateList" resultMap="associateMap">
+		SELECT * from cms_movie_preview cmp
+		<where>
+			1=1 
+			<if test="MovieName != null and MovieName !=''">
+				and cmp.MovieName like CONCAT('%', #{MovieName},'%')
+			</if>
+			<if test="PreviewName != null and PreviewName !=''">
+				and cmp.PreviewName like CONCAT('%', #{PreviewName},'%')
+			</if>
+			<if test="MediaID != null and MediaID !=''">
+				and cmp.MediaID  = #{MediaID}
+			</if>
+		</where>
+	</select>
+	<select id="findCount" resultType="int">
+		SELECT count(*) from cms_movie_preview cmp
+		<where>
+			1=1 
+			<if test="MovieName != null and MovieName !=''">
+				and cmp.MovieName like CONCAT('%', #{MovieName},'%')
+			</if>
+			<if test="PreviewName != null and PreviewName !=''">
+				and cmp.PreviewName like CONCAT('%', #{PreviewName},'%')
+			</if>
+			<if test="MediaID != null and MediaID !=''">
+				and cmp.MediaID  = #{MediaID}
+			</if>
+		</where>
+	</select>
+	<select id="getAssociateById" resultMap="associateMap">
+		select * from cms_movie_preview where movieid=#{movieid} and previewid=#{previewid}
+	</select>
+	<select id="findAllMovieList" resultType="com.guanglumedia.cms.movie.entity.Movie">
+		SELECT * FROM movie WHERE id NOT IN (SELECT Movieid FROM cms_movie_preview)
+	</select>
+	<select id="findAllPreViewList" resultType="com.guanglumedia.cms.movie.entity.PreView">
+		SELECT * FROM preview WHERE id NOT IN (SELECT Previewid FROM cms_movie_preview)
+	</select>
+	<insert id="addAssociate" parameterType="com.guanglumedia.cms.movie.entity.Associate">
+		insert into cms_movie_preview values(#{Movieid},#{Previewid},#{MovieName},#{PreviewName},#{MediaID})
+	</insert>
+	<update id="updateAssociate" parameterType="map">
+		update cms_movie_preview 
+		<set>
+			<if test="Movieid != null and Movieid != ''">
+				Movieid=#{Movieid},
+			</if>
+			<if test="MovieName != null and MovieName != ''">
+				MovieName=#{MovieName},
+			</if>
+			<if test="Previewid != null and Previewid != ''">
+				Previewid=#{Previewid},
+			</if>
+			<if test="PreviewName != null and PreviewName != ''">
+				PreviewName=#{PreviewName},
+			</if>
+			<if test="MediaID != null and MediaID != ''">
+				MediaID=#{MediaID},
+			</if>
+		</set>
+		<where>
+			Movieid=#{mid} and Previewid=#{pid}
+		</where>
+	</update>
+	<delete id="delAssociate" parameterType="map">
+		delete from cms_movie_preview where 1=1
+		<if test="movieid != null and movieid != ''">
+			and Movieid=#{movieid} 
+		</if>
+		<if test="previewid != null and previewid != ''">
+			and Previewid=#{previewid} 
+		</if>
+	</delete>
+</mapper>
+	

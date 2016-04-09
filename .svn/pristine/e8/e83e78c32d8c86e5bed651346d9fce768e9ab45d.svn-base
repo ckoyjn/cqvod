@@ -1,0 +1,178 @@
+@charset "utf-8";
+/* CSS Document */
+
+* {
+	font-size:12px;
+	font-family:'宋体';
+	margin:0;
+	padding:0;
+	border:0;
+}
+div, hr, blockquote, ul, ol, li, table, th, td, dl, dt, dd, h1, h2, h3, h4, h5, h6, pre, form, input, button, select, textarea, fieldset, legend, img {
+	margin:0;
+	padding:0;
+	border:0;
+}
+ul, li {
+	list-style:none;
+}
+a {
+	outline:none;
+}
+
+
+.index_content {
+	/*margin:-8px;*/
+	min-width:1002px;
+}
+a {
+	text-decoration:none;
+}
+.index_content {
+	margin:0;
+	padding:0;
+}
+.header {
+	background:url(../img/header_bg_repart.jpg) repeat-x;
+	/*margin:-8px -8px 0px;*/
+	position:relative;
+}
+.index_head {
+	height:45px;
+	background:url(../img/header_bg.jpg) no-repeat;
+}
+.main {
+}
+.logo {
+	padding-left:33px;
+	padding-top:5px;
+	float:left;
+}
+.index_head h2 {
+	float:left;
+	color:#FFF;
+	font-size:18px;
+	font-family:"微软雅黑";
+	padding-top:46px;
+	padding-left:25px;
+	font-weight:normal;
+	font-weight:normal;
+}
+.head_right {
+	float:right;
+	color:#FFF;
+	margin-top:12px;
+	margin-right:30px;
+}
+.head_right li {
+	height:24px;
+	margin-bottom:6px;
+}
+.head_right li img {
+	vertical-align:middle;
+	margin:0px 8px 0px 0px;
+	;
+}
+/*页面左部导航菜单样式*/
+
+.main_left {
+	height:100%;
+	overflow:hidden;
+	width:212px;
+	min-height:600px;
+	float:left;
+	background:url(../img/left_bg.jpg) repeat-y;
+}
+.nav li {
+	margin-left:-12px;
+}
+.nav {
+	margin-top:10px;
+}
+.nav_top {
+	display:block;
+	width:178px;
+	height:34px;
+	line-height:34px;
+	background:url(../img/left_li_link.png) no-repeat;
+	cursor:pointer;
+	margin-left:30px;
+	color:#333;
+}
+.nav_top_open {
+	display:block;
+	width:178px;
+	height:34px;
+	line-height:34px;
+	background:url(../img/left_li_hover.png) no-repeat;
+	cursor:pointer;
+	margin-left:30px;
+	color:#333;
+}
+.nav_top a {
+	margin-left:20px;
+	padding-left:25px;
+	color:#E57915;
+	font-weight:bold;
+}
+.nav_top_open a {
+	margin-left:20px;
+	padding-left:25px;
+	color:#E57915;
+	font-weight:bold;
+}
+.nav li ul .b_line {
+	padding-bottom:2px;
+	width:178px;
+}
+.nav li ul li:hover {
+	color:#950304;
+}
+.nav li ul li a {
+	width:220px;
+	height:30px;
+	display:block;
+	line-height:30px;
+	margin-left:90px;
+	color:#333;
+	background:url(../img/ico09.png) left no-repeat;
+	padding-left:18px;
+}
+.li_alink {
+	background:url(../../img/nav_li_a_bgchange.jpg) no-repeat;
+	outline:none;
+}
+.nav li ul li a:hover {
+	background:url(../img/ico09_hover.png) left no-repeat;
+}
+.li_ahoverd {
+	background:url(../img/nav_li_a_bg.jpg) no-repeat;
+	color:#226EA7;
+	outline:none;
+}
+.li_actived {
+	background:url(../img/nav_li_a_bg.jpg) no-repeat;
+	color:#226EA7;
+	outline:none;
+}
+.main_right {
+	height:600px;
+	width:auto;
+	min-width:757px;
+_width:expression((document.documentElement.clientWidth||document.body.clientWidth)<757?"757px":"");
+	overflow:auto;
+}
+.copy {
+	background:url(../img/copy_bg.jpg) repeat-x;
+	height:30px;
+	width:100%;
+	text-align:center;
+	margin-top:px;
+}
+.copy_text {
+	text-align:center;
+	line-height:30px;
+	color:#858585;
+	font-family:Arial, Helvetica, sans-serif;
+	color:#CCC;
+}

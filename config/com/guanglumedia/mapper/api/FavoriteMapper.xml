@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.api.dao.FavoriteDao">
+	<resultMap id="Favorite" type="com.guanglumedia.api.entity.Favorite" >
+		<id property="id" column="id"></id>
+		<result property="pid" column="pid"></result>
+		<result property="identify" column="identify"></result>
+		<result property="name" column="name"></result>
+	</resultMap>
+	
+	<insert id="addFavorite" parameterType="net.sf.json.JSONObject">
+		<![CDATA[
+			insert into favorite (pid,smartcardid,createtime) values (#{pid} ,#{smartcardid},now())
+		]]>
+	</insert>
+	
+	<select id="getFavoriteByIdPid" parameterType="net.sf.json.JSONObject" resultType="int">
+		<![CDATA[
+			select count(1) from favorite where pid = #{pid} and smartcardid=#{smartcardid}
+		]]>
+	</select>
+	
+	<delete id="delFavoriteByIdPid" parameterType="net.sf.json.JSONObject">
+		<![CDATA[
+			delete from favorite where pid = #{pid} and smartcardid=#{smartcardid}
+		]]>
+	</delete>
+	
+	<select id="getFavorite" parameterType="net.sf.json.JSONObject" resultMap="Favorite">
+		<![CDATA[
+			select f.id,f.pid,m.Name name, m.Identify identify from favorite f left join movie m on f.pid = m.id where f.smartcardid=#{smartcardid} and m.status=1 order by f.id desc
+		]]>
+	</select>
+	
+	<select id="findCount" parameterType="net.sf.json.JSONObject" resultType="int">
+		<![CDATA[
+			select count(1) from favorite where smartcardid=#{smartcardid}
+		]]>
+	</select>
+	
+</mapper>

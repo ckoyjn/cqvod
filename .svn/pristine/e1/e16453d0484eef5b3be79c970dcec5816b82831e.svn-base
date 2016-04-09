@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.api.dao.RecommendDao">
+	<resultMap id="Recommend" type="com.guanglumedia.api.entity.Recommend" >
+		<id property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="objectid" column="objectid"/>
+		<result property="objecttype" column="objecttype"/>
+		<result property="Identify" column="Identify"/>
+		<result property="onlinetime" column="onlinetime"/>
+		<result property="desc" column="desc"/>
+		<result property="status" column="status"/>
+	</resultMap>
+	
+	<select id="findRecommend"  resultType="hashmap" >
+		select r.objectid id,r.objecttype type,r.Identify identify 
+		from recommend r
+		where r.status=1 and r.objecttype=0
+	</select>
+	
+	<select id="findRecommendSubject"  resultType="com.guanglumedia.api.entity.CmsSpecial" >
+		select * from cms_special c where c.status=1 and exists(select * from recommend where status=1 and objecttype=1 and objectid= c.id) limit 1
+	</select>
+	
+	<delete id="delrecommend" parameterType="int"> 
+		delete from recommend where objectid=#{id}
+	</delete>
+	
+	<select id="findActivity" resultType="hashmap">
+		select * from cms_activity where status=1 
+	</select>
+	
+	
+	<select id="findRecommendActivity"  resultType="com.guanglumedia.cms.activity.entity.Activity" >
+		select * from cms_activity where status=1 and rank=1 limit 1
+	</select>
+</mapper>

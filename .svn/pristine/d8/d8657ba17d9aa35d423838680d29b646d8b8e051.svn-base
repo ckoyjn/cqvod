@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.cms.bosslog.dao.BosslogDao">
+
+	<select id="getBosslogList" resultType="com.guanglumedia.cms.bosslog.entity.Bosslog" parameterType="com.guanglumedia.cms.bosslog.entity.Bosslog">
+		select SQL_CALC_FOUND_ROWS
+		b.id,b.smartcardid,b.evcnid,b.amount,b.errcode,b.msg,b.type ,b.recordtime
+		from bosslog b
+		<where>
+			<if test="startTime!=null">
+				b.recordtime >= '#{startTime}'
+			</if>
+			<if test="stopTime!=null">
+				and b.recordtime <![CDATA[<=]]> '#{stopTime}'
+			</if>
+			<if test="smartcardid!=null">
+				and b.smartcardid = '#{smartcardid}'
+			</if>
+			<if test="evcnid!=null">
+				and b.evcnid = #{evcnid}
+			</if>
+			
+		</where>
+		order by b.id desc
+	</select>
+	<select id="getBosslogCount" resultType="int">
+		select FOUND_ROWS()
+	</select>
+	
+	<select id="getCount" resultType="map" parameterType="com.guanglumedia.cms.bosslog.entity.Bosslog">
+		select sum(t.price) as orderCount ,
+		(select sum(b.amount) from bosslog b 
+		<where>
+			b.type='0'
+			<if test="startTime!=null">
+				and b.recordtime >= '#{startTime}'
+			</if>
+			<if test="stopTime!=null">
+				and b.recordtime <![CDATA[<=]]> '#{stopTime}'
+			</if>
+			<if test="smartcardid!=null">
+				and b.smartcardid = '#{smartcardid}'
+			</if>
+			<if test="evcnid!=null">
+				and b.evcnid = #{evcnid}
+			</if>
+		</where>
+		) as SucceedCount,
+		(select sum(b.amount) from bosslog b  
+		<where>
+			b.type='1'
+			<if test="startTime!=null">
+				and b.recordtime >= '#{startTime}'
+			</if>
+			<if test="stopTime!=null">
+				and b.recordtime <![CDATA[<=]]> '#{stopTime}'
+			</if>
+			<if test="smartcardid!=null">
+				and b.smartcardid = '#{smartcardid}'
+			</if>
+			<if test="evcnid!=null">
+				and b.evcnid = #{evcnid}
+			</if>
+		</where>
+		 ) as DefeatedCount
+		from trxnlog t
+		where t.evcnId in(SELECT b.evcnid from bosslog b
+		<where>
+			<if test="startTime!=null">
+				and b.recordtime >= '#{startTime}'
+			</if>
+			<if test="stopTime!=null">
+				and b.recordtime <![CDATA[<=]]> '#{stopTime}'
+			</if>
+			<if test="smartcardid!=null">
+				and b.smartcardid = '#{smartcardid}'
+			</if>
+			<if test="evcnid!=null">
+				and b.evcnid = #{evcnid}
+			</if>
+		</where>
+		)
+	</select>
+	<!-- where b.recordtime >= 2015-7-30 -->
+</mapper>

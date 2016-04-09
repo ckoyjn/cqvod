@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+	<!-- 配置session超时时间 -->
+	<session-config>
+		<session-timeout>60</session-timeout>
+	</session-config>
+	
+	<!-- 配置log4j日志文件 -->
+	<context-param>
+		<param-name>log4jConfigLocation</param-name>
+		<param-value>classpath:tomcat-log.properties</param-value>
+	</context-param>
+	<context-param>
+		<param-name>log4jRefreshInterval</param-name>
+		<param-value>6000</param-value>
+	</context-param>
+	<listener>
+		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+	</listener>
+	
+	<!-- 加载spring容器 -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:spring-*.xml</param-value>
+	</context-param>
+	<!-- 注册spring监听器 -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+	</listener>
+		
+	<!-- spring拦截器处理字符编码 -->
+	<filter>
+		<filter-name>encode</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encode</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<!-- 配置UrlRewrite伪静态化-->
+	<filter>
+		<filter-name>urlRewriteFilter</filter-name>
+		<filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
+		<init-param>
+   			<param-name>confPath</param-name>
+      		 <param-value>/WEB-INF/classes/tomcat-rewrite.xml</param-value>
+ 		</init-param> 
+	</filter>
+	<filter-mapping>
+		<filter-name>urlRewriteFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+	
+	<!-- 配置spring mvc -->
+	<servlet>
+		<servlet-name>springmvc</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>  
+            <param-name>contextConfigLocation</param-name>  
+            <param-value>classpath:spring-mvc.xml</param-value>  
+        </init-param> 
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>springmvc</servlet-name>
+		<url-pattern>*.do</url-pattern>
+		<url-pattern>*.action</url-pattern>
+	</servlet-mapping>
+	
+	 <servlet>  
+        <servlet-name>rest</servlet-name>  
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>  
+        <init-param>  
+            <param-name>contextConfigLocation</param-name>  
+            <param-value>classpath:spring-mvc.xml</param-value>  
+        </init-param> 
+        <load-on-startup>1</load-on-startup>  
+    </servlet>  
+  
+    <servlet-mapping>  
+        <servlet-name>rest</servlet-name>  
+        <url-pattern>/REST/*</url-pattern>  
+    </servlet-mapping> 
+	
+	<!-- 载入省市县 -->
+	<listener>
+		<listener-class>com.guanglumedia.common.listener.DistrictListener</listener-class>
+	</listener>
+	
+	<!--配置默认主页 -->
+	<welcome-file-list>
+		<welcome-file>epg/index.jsp</welcome-file>
+	</welcome-file-list>
+
+	<!-- 错误跳转页面 -->
+	<error-page>
+		<error-code>404</error-code>
+		<location>/404.html</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<exception-type>java.lang.Exception</exception-type>
+		<location>/error.html</location>
+	</error-page>
+	<distributable/>
+	
+	<!-- axis配置 -->
+	<servlet>
+	  <display-name>Apache-Axis Servlet</display-name>
+	  <servlet-name>AxisServlet</servlet-name>
+	  <servlet-class>org.apache.axis.transport.http.AxisServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	  <servlet-name>AxisServlet</servlet-name>
+	  <url-pattern>/servlet/AxisServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+	  <servlet-name>AxisServlet</servlet-name>
+	  <url-pattern>*.jws</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+	  <servlet-name>AxisServlet</servlet-name>
+	  <url-pattern>/services/*</url-pattern>
+	</servlet-mapping>
+	<servlet>
+	  <display-name>Axis Admin Servlet</display-name>
+	  <servlet-name>AdminServlet</servlet-name>
+	  <servlet-class>org.apache.axis.transport.http.AdminServlet</servlet-class>
+	  <load-on-startup>100</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+	  <servlet-name>AdminServlet</servlet-name>
+	  <url-pattern>/servlet/AdminServlet</url-pattern>
+	</servlet-mapping>
+</web-app>

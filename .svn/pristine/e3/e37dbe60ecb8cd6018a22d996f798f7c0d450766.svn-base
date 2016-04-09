@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.api.dao.UserRestDao">
+	<insert id="addScore" parameterType="net.sf.json.JSONObject">
+		insert into score (movieid,smartcardid,score) values (#{pid},#{smartcardid},#{score})
+	</insert>
+	
+	<insert id="addPraise" parameterType="net.sf.json.JSONObject">
+		insert into cms_praise_relationship (programeid,smartcardid) values (#{pid},#{smartcardid})
+	</insert>
+	
+	<select id="selectUserOrder" parameterType="net.sf.json.JSONObject" resultType="map">
+		<![CDATA[
+		SELECT m.Identify identify,
+		       m.id       id,
+		       m.Name     name,
+		       Max(t.recordtime) endtime
+		FROM   movie m
+		       RIGHT JOIN trxnlog t
+		               ON m.mediaid = t.mediaid
+		WHERE  t.userid = #{smartcardid}
+		AND 	 m.status=1
+		GROUP  BY m.identify,
+		          m.id,
+		          m.name
+		ORDER  BY Max(t.recordtime) desc
+		    ]]>
+	</select>
+	
+	
+	<select id="findUserOrderCount" parameterType="net.sf.json.JSONObject" resultType="int">
+		SELECT
+			count(
+				DISTINCT m.Identify,
+				m.id,
+				m.`Name`
+			)
+		FROM
+			trxnlog t
+		LEFT JOIN movie m ON t.MediaID = m.MediaID
+		WHERE
+			userId = #{smartcardid}
+		AND t.recordtime is not null
+		AND m.status = 1;
+	</select>
+</mapper>

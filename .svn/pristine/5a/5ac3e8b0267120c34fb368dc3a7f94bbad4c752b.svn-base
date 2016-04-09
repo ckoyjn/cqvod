@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.cms.morespecial.dao.MorespecialDao">
+	<resultMap id="MorespecialMap"      type="com.guanglumedia.cms.morespecial.entity.Morespecial">
+		<result property="id"           column="id"></result>
+		<result property="name"         column="name"></result>
+		<result property="identify"     column="identify"></result>
+		<result property="imgUrl"       column="imgUrl"></result>
+		<result property="specialIDs"   column="specialIDs"></result>
+		<result property="specialNames" column="specialNames"></result>
+		<result property="status"       column="status"></result>
+		<result property="createTime"   column="createTime"></result>
+		<result property="updateTime"   column="updateTime"></result>
+		<result property="isRecommend"  column="isRecommend"></result> 
+	</resultMap>
+	
+	<select id="findMorespecialList" resultType="com.guanglumedia.cms.morespecial.entity.Morespecial">
+	   select * from cms_morespecial
+	   <where>
+		   <if test="specialNames!=null and specialNames!=''">
+		   specialNames like CONCAT('%',#{specialNames},'%')
+		   </if>
+		   <if test="status!=null and status!=''">
+		   and status=#{status}
+		   </if>
+	   </where>
+	</select>
+	
+	<select id="findCount" resultType="int">
+		select count(*) from cms_morespecial CM
+		<where>
+			1=1 
+			<if test="specialNames != null and specialNames !=''">
+				and CM.specialNames like CONCAT('%', #{specialNames},'%')
+			</if>
+			<if test="status != null and status !=''">
+				and CM.status=#{status}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getMorespecialById" parameterType="int" resultType="com.guanglumedia.cms.morespecial.entity.Morespecial">
+	   select * from cms_morespecial where id=#{id}
+	</select>
+	
+	<insert id='updateMorespecial' parameterType="com.guanglumedia.cms.morespecial.entity.Morespecial">
+		update cms_morespecial
+		<set>
+			<if test="name != null and name !=''">
+				name=#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="identify != null and identify !=''">
+				identify=#{identify,jdbcType=VARCHAR},
+			</if>
+			<if test="specialIDs != null and specialIDs !=''">
+				specialIDs=#{specialIDs,jdbcType=VARCHAR},
+			</if>
+			<if test="specialNames != null and specialNames !=''">
+				specialNames=#{specialNames,jdbcType=VARCHAR},
+			</if>
+			<if test="identify != null and identify !=''">
+				identify=#{identify,jdbcType=VARCHAR},
+			</if>
+			<if test="createtime != null and createtime !=''">
+				createTime=#{createTime,jdbcType=VARCHAR},
+			</if>
+			<if test="updatetime != null and updatetime !=''">
+				updateTime=#{updateTime,jdbcType=VARCHAR},
+			</if>
+			<if test="isRecommend != null and isRecommend !=''">
+				isRecommend=#{isRecommend,jdbcType=VARCHAR},
+			</if>
+		</set>
+		<where>
+			id=#{id}
+		</where>
+	</insert>
+	
+	<insert id='addMorespecial' parameterType="com.guanglumedia.cms.morespecial.entity.Morespecial">
+		insert into cms_morespecial(name,identify,specialNames,status,isRecommend) 
+		values (
+		#{name},#{identify},#{specialNames},#{status},#{isRecommend}
+		)
+	</insert>
+	
+	<delete id="delMorespecial" parameterType="int">
+		delete from cms_morespecial where id=#{id}
+	</delete>
+</mapper>	

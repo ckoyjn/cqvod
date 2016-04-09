@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.cms.pagerecommend.dao.PagerecommendDao">
+	<resultMap id="PagerecommendMap" type="com.guanglumedia.cms.pagerecommend.entity.Pagerecommend" >
+		<result property="id"         column="id"></result>
+		<result property="title"      column="title"></result>
+		<result property="sort"       column="sort"></result>
+		<result property="status"     column="status"></result>
+		<result property="type"       column="type"></result>
+		<result property="objectid"   column="objectid"></result>
+		<result property="objectname" column="objectname"></result>
+		<result property="identity"   column="identity"></result>
+		<result property="imgurl"     column="imgurl"></result>
+		<result property="sort"       column="sort"></result>
+		<result property="createtime" column="createtime"></result>
+		<result property="updatetime" column="updatetime"></result>
+	</resultMap>
+	<select id="findPagerecommendList" resultMap="PagerecommendMap">
+		SELECT * from page_recommend pr
+		<where>
+			1=1 
+			<if test="title != null and title != ''">
+				and pr.title like CONCAT('%', #{title},'%')
+			</if>
+			<if test="type != null and type != ''">
+				and pr.type  = #{type}
+			</if>
+		</where>
+	</select>
+	<select id="findCount" resultType="int">
+		select FOUND_ROWS()
+	</select>
+	<select id="getPagerecommendById" resultMap="PagerecommendMap">
+		SELECT * FROM page_recommend pr
+		where pr.id=#{id}
+	</select>
+	<insert id='updatePagerecommend' parameterType="com.guanglumedia.cms.pagerecommend.entity.Pagerecommend">
+		update page_recommend
+		<set>
+			<if test="title != null and title !=''">
+				title=#{title,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null and type !=''">
+				type=#{type,jdbcType=VARCHAR},
+			</if>
+			<if test="identity != null and identity !=''">
+				identity=#{identity,jdbcType=VARCHAR},
+			</if>
+			<if test="sort != null and sort !=''">
+				sort=#{sort,jdbcType=VARCHAR},
+			</if>
+		</set>
+		<where>
+			id=#{id}
+		</where>
+	</insert>
+	<insert id='addPagerecommend' parameterType="com.guanglumedia.cms.pagerecommend.entity.Pagerecommend">
+		insert into page_recommend (title,status,identity,imgurl,sort) 
+		value (
+		#{title},#{status},#{identity},#{imgurl}
+		)
+	</insert>
+	<delete id="delPagerecommend" parameterType="int">
+		delete from page_recommend where id=#{id}
+	</delete>
+</mapper>	

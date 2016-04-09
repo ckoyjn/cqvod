@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.api.dao.MovieRestDao">
+	<select id="getMovieDetail" parameterType="net.sf.json.JSONObject" resultType="net.sf.json.JSONObject">
+		<![CDATA[
+			SELECT
+				m.identify,
+				m.`Name` name,
+				m.EName AS ename,
+				m.Director director,
+				m.Actor actor,
+				m.Intro intro,
+				m.price,
+				m.Mins mins,
+				m.mediaid,
+				m.playurl,
+				CASE
+			WHEN (
+				SELECT
+					round(ifnull(AVG(score), 0), 1)
+				FROM
+					score s
+				WHERE
+					s.movieid = m.id
+			) >= m.Score THEN
+				(
+					SELECT
+						round(ifnull(AVG(score), 0), 1)
+					FROM
+						score s
+					WHERE
+						s.movieid = m.id
+				)
+			ELSE
+				round(m.score,1)
+			END score,
+			 (
+				SELECT
+					COUNT(1)
+				FROM
+					favorite f
+				WHERE
+					smartcardid = #{smartcardid}
+				AND f.pid = m.id
+			) isFavorite,
+			(
+				SELECT
+					COUNT(1)
+				FROM
+					score s
+				WHERE
+					s.smartcardid = #{smartcardid}
+				AND s.movieid = m.id
+			) isRated,
+			CASE WHEN (
+				SELECT
+						score
+					FROM
+						score s
+					WHERE
+						s.smartcardid = #{smartcardid}
+					AND s.movieid = m.id
+			) is null then 0
+			ELSE 
+			(SELECT
+						score
+					FROM
+						score s
+					WHERE
+						s.smartcardid = #{smartcardid}
+					AND s.movieid = m.id
+			)END rating,
+			(select count(1) from cms_praise_relationship where smartcardid=#{smartcardid} and programeid=#{pid}) as isPraised,
+			(select count(1) from cms_praise_relationship where programeid=#{pid}) as praiseNum,
+			(select count(1) from watchrecord where programeid=#{pid}) as watchNum,
+			CASE WHEN (select mediaid from cms_movie_preview where movieid=#{pid}) is null then ''
+			ELSE 
+			(select mediaid from cms_movie_preview where movieid=#{pid})END preview
+			FROM
+				movie m
+			WHERE
+				m.id=#{pid}
+		]]>
+	</select>
+	
+	<select id="getPreviews" resultType="map">
+		<![CDATA[
+			select id,name,identify,actors as actor,casttime,MediaID mediaid from preview where status=1 order by id desc limit 8 
+		]]>
+	</select>
+	
+	<select id="getAuth" resultType="int" parameterType="net.sf.json.JSONObject">
+		<![CDATA[
+			SELECT
+				COUNT(1)
+			FROM
+				trxnlog
+			WHERE
+				userid = #{smartcardid} AND mediaid=(select mediaid from movie WHERE id=#{pid}) and DATE_ADD(recordtime,INTERVAL 2 DAY) > NOW()
+		]]>
+	</select>
+</mapper>

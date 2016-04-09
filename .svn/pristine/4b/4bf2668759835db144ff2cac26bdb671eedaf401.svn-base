@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.cms.movie.dao.PreviewDao">
+	<resultMap id="PreViewMap" type="com.guanglumedia.cms.movie.entity.PreView" >
+		<result property="id" column="id"></result>
+		<result property="Identify" column="identify"></result>
+		<result property="VodID" column="vodid"></result>
+		<result property="MediaID" column="mediaid"></result>
+		<result property="Name" column="name"></result>
+		<result property="Rank" column="rank"></result>
+		<result property="Status" column="status"></result>
+		<result property="CastTime" column="casttime"></result>
+		<result property="Director" column="director"></result>
+		<result property="Actor" column="actors"></result>
+	</resultMap>
+	<select id="findPreViewList" resultMap="PreViewMap">
+		SELECT * from preview m
+		<where>
+			1=1 
+			<if test="Name != null and Name !=''">
+				and m.name like CONCAT('%', #{Name},'%')
+			</if>
+			<if test="Status != null and Status !=''">
+				and m.status  = #{Status}
+			</if>
+			<if test="Director != null and Director !=''">
+				and m.director like CONCAT('%', #{Director},'%')
+			</if>
+			<if test="Actor != null and Actor !=''">
+				and m.actors like CONCAT('%', #{Actor},'%')
+			</if>
+		</where>
+	</select>
+	<select id="findCount" resultType="int">
+		select count(*) from preview m
+		<where>
+			1=1 
+			<if test="Name != null and Name !=''">
+				and m.name like CONCAT('%', #{Name},'%')
+			</if>
+			<if test="Status != null and Status !=''">
+				and m.status  = #{Status}
+			</if>
+			<if test="Director != null and Director !=''">
+			and m.director like CONCAT('%', #{Director},'%')
+			</if>
+			<if test="Actor != null and Actor !=''">
+			and m.actors like CONCAT('%', #{Actor},'%')
+			</if>
+		</where>
+	</select>
+	
+	<select id="getPreViewById" resultMap="PreViewMap">
+		SELECT * FROM preview pv 
+		where pv.id=#{id}
+	</select>
+	
+	<insert id='addPreView' parameterType="com.guanglumedia.cms.movie.entity.PreView">
+		insert into preview (Identify,VodID,MediaID,Name,Rank,CastTime,Director,Actors) 
+		values (
+		#{Identify},#{VodID},#{MediaID},#{Name},#{Rank},#{CastTime},#{Director},#{Actor}
+		)
+	</insert>
+	<insert id='updatePreView' parameterType="com.guanglumedia.cms.movie.entity.PreView">
+		update preview
+		<set>
+			<if test="Identify != null and Identify !=''">
+				identify=#{Identify,jdbcType=VARCHAR},
+			</if>
+			<if test="MediaID != null and MediaID !=''">
+				mediaID=#{MediaID,jdbcType=VARCHAR},
+			</if>
+			<if test="Name != null and Name !=''">
+				name=#{Name,jdbcType=VARCHAR},
+			</if>
+			<if test="Rank != null and Rank !=''">
+				rank=#{Rank,jdbcType=VARCHAR},
+			</if>
+			<if test="Status != null and Status !=''">
+				status=#{Status,jdbcType=VARCHAR},
+			</if>
+			<if test="CastTime != null and CastTime !=''">
+				casttime=#{CastTime,jdbcType=VARCHAR},
+			</if>
+			<if test="Director != null and Director !=''">
+				director=#{Director,jdbcType=VARCHAR},
+			</if>
+			<if test="Actor != null and Actor !=''">
+				actors=#{Actor,jdbcType=VARCHAR},
+			</if>
+		</set>
+		<where>
+			id=#{id}
+		</where>
+	</insert>
+	<delete id="delPreView" parameterType="String">
+		delete from preview where id=#{id}
+	</delete>
+	<select id="findAllPreView" resultMap="PreViewMap">
+		select * from preview
+	</select>
+	<select id="findRank" parameterType="String" resultType="int">
+		select count(rank) from preview 
+		<where>
+		rank=#{rank}
+		<if test="id!=0">
+		and id!=#{id}
+		</if>
+		</where>
+	</select>
+	<select id="checkMediaID" parameterType="String" resultType="int">
+	  select count(*) from preview where MediaID=#{mediaID}
+	 <if test="id!='0'">
+		and id!=#{id}
+	 </if>
+	</select>
+</mapper>	

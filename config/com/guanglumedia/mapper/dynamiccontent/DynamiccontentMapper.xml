@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.guanglumedia.cms.dynamiccontent.dao.DynamiccontentDao">
+	<resultMap id="DynamiccontentMap" type="com.guanglumedia.cms.dynamiccontent.entity.Dynamiccontent" >
+		<result property="id" column="id"></result>
+		<result property="title" column="title"></result>
+		<result property="sort" column="sort"></result>
+		<result property="type" column="type5"></result>
+		<result property="status" column="status"></result>
+		<result property="objectid" column="objectid"></result>
+		<result property="identify" column="identify"></result>
+		<result property="imgurl" column="imgurl"></result>
+	</resultMap>
+	
+	<select id="findCount" resultType="int">
+		select count(*) from dynamic_content d
+		<where>
+			1=1 
+			<if test="title != null and title !=''">
+				and d.title like CONCAT('%', #{title},'%')
+			</if>
+			<if test="status != null and status !=''">
+				and d.status  = #{status}
+			</if>
+			<if test="type != null and type !=''"> 
+				and d.type = = #{type}
+			</if>
+			<if test="createtime!=null and updatetime!=''">
+		   		and createtime=#{createtime}
+		   	</if>
+		   	<if test="updatetime!=null and updatetime!=''">
+		   		and updatetime=#{updatetime}
+		   	</if>
+		</where>
+	</select>
+	
+	
+	<select id="findDynamiccontentList" resultType="com.guanglumedia.cms.dynamiccontent.entity.Dynamiccontent" parameterType="map">
+	   select * from dynamic_content 
+	   <where>
+		   <if test="title!=null and title!=''">
+		   title like concat('%',#{title},'%')
+		   </if>
+		   <if test="status!=null and status!=''">
+		   and status=#{status}
+		   </if>
+		   <if test="createtime!=null and createtime!=''">
+		   and createtime=#{createtime}
+		   </if>
+		   <if test="updatetime!=null and updatetime!=''">
+		   and updatetime=#{updatetime}
+		   </if>
+	   </where>
+	</select>
+	
+	
+	<insert id='addDynamiccontent' parameterType="com.guanglumedia.cms.dynamiccontent.entity.Dynamiccontent">
+		INSERT INTO `dynamic_content`(title,sort,status,type,objectid,identify,imgurl,createtime,updatetime) VALUES (#{title}, #{sort},#{status}, #{type},#{objectid},#{identify},#{imgurl},#{createtime},#{updatetime});
+	</insert>
+	
+	<select id="getDynamiccontentById" parameterType="int" resultType="com.guanglumedia.cms.dynamiccontent.entity.Dynamiccontent">
+	   select * from dynamic_content where id=#{id}
+	</select>
+	
+	<insert id="insertDynamiccontent" parameterType="com.guanglumedia.cms.dynamiccontent.entity.Dynamiccontent">
+	   insert into dynamic_content(content,sort,orderby,status,`desc`) values(#{name},#{sort},#{orderby},#{status},#{desc})
+	</insert>
+	
+	
+	<delete id="delDynamiccontent" parameterType="int">
+	      delete from dynamic_content where id=#{id}
+	</delete>
+	
+	
+	<update id="updateDynamiccontent" parameterType="com.guanglumedia.cms.dynamiccontent.entity.Dynamiccontent">
+	   update dynamic_content
+	   <set>
+	       <if test="title != null">title=#{title},</if>
+	       <if test="sort != null">sort=#{sort},</if>
+	       <if test="status != null">status=#{status},</if>
+	       <if test="createtime != null">createtime=#{createtime},</if>
+		   <if test="updatetime!=null">updatetime=#{updatetime}</if>
+	   </set>
+	   <where> id=#{id}
+	   </where>
+	</update>
+	
+</mapper>	

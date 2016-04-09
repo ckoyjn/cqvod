@@ -1,0 +1,196 @@
+##------------------引入共公样式及JS--------------------------##
+
+#macro(tagLibs)
+    #set( $ctx = "$!{rc.contextPath}" )
+    <script type="text/javascript">
+		window.ctx = '${ctx}';
+	</script>
+    <script type="text/javascript" src="${ctx}/static/js/common/jquery-1.8.3.js"></script>
+	<script type="text/javascript" src="${ctx}/static/js/ott-all.min.js"></script>
+#end
+
+#macro(tagLibs2)
+    #set( $ctx = "$!{rc.contextPath}" )
+    <script type="text/javascript">
+		window.ctx = '${ctx}';
+	</script>
+    <link type="text/css" rel="stylesheet" href="${ctx}/css/public.css"/>
+    <script type="text/javascript" src="${ctx}/js/jquery/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="${ctx}/js/ott/ott-all.min.js"></script>
+#end
+##-----------------时间控件JS及样式-----------------------------##
+#macro(calendar)
+	<link type="text/css" rel="stylesheet" href="${ctx}/css/calendar.css" />
+    <script type="text/javascript" src="${ctx}/js/date/calendar.js" ></script>  
+    <script type="text/javascript" src="${ctx}/js/date/calendar-zh.js" ></script>
+    <script type="text/javascript" src="${ctx}/js/date/calendar-setup.js"></script>
+	<script type="text/javascript" src="${ctx}/js/My97DatePicker/WdatePicker.js"></script>
+#end
+##---------------------------分页----------------------------------------------------------------##
+#macro( rendPageInfo $pml )
+    #if (!$null.isNull($pml.pagedModelList) && $pml.pagedModelList.size()!=0 && $pml.pageCount)
+        <div class="pagination">
+			<span class="select-page">
+        		共$!{pml.totalCount}条记录&nbsp;
+                第$!{pml.pageId}/${pml.pageCount}页
+			</span>
+            #set($totalPage = ${pml.pageCount})
+			#if($!{pml.pageId} == 1)
+				<span class="first-page_2" >首页</span>
+				<span class="start-page" ><span>上一页</span></span>
+			#else
+				<a href="javascript:_toPage(1);" class="first-page"><span>首页</span></a>
+				<a href="javascript:prevSkip();" class="prev-page"><span>上一页</span></a>
+			#end
+			
+			#if($totalPage > 1)
+                #set($group = $!{pml.pageId}/10)
+                #set($startPage = $group*10+1)
+                #set($endPage = $group*10+10)
+                #if($endPage > $totalPage)
+            		#set($endPage = $totalPage)
+                #end
+                #foreach($page in [$startPage .. $endPage])
+                    #if($page==${pml.pageId})
+						<span class="current-page">$page</span>
+                    #else
+            			<a href="javascript:_toPage($page);">$page</a>
+                    #end
+                #end
+			#end
+			
+			#if($totalPage != $!{pml.pageId})
+        		<a href="javascript:nextSkip();" class="next-page" target="_self"><span>下一页</span></a>
+				<a href="javascript:_toPage($totalPage);" class="last-page" ><span>末页</span></a>
+        	#else
+				<span class="end-page"><span>下一页</span></span>
+				<span class="last-page_2"><span>末页</span></span>
+			#end
+             <input type="hidden" id="pageNum" name="pageNum" value="$totalPage" />
+			 #if($totalPage > 1)
+				<span>转到</span>
+    			 <span class="skip-page">
+        			 <input type="text" id="_p" name="_p" value="$!{pml.pageId}" onkeypress="onlyAcceptNumeric(event, this);" />
+                     <button onclick="skipPage();" type="button">确定</button>
+    			 </span>
+			 #end
+			 
+			 <input type="hidden" id="_pageRow" name="_pageRow" value="${pml.pageSize}" />
+			 ###if(${pml.isShowRowSelect()} == true)
+				<span>每页显示</span>
+    			<span class="pageRow">
+    				<select id="_pageRowSelect">
+        				#foreach($pageRow in ${pml.pageRowSelect})
+        					<option value="$pageRow" #if(${pml.pageSize} == $pageRow) selected #end>${pageRow}行</option>
+        				#end
+    				</select>
+    				<button onclick="selectPageRow();" type="button">确定</button>
+    			 </span>
+			 ###end
+		</div>	
+    #end
+#end
+##----------------------------------------------------------------------------------------------------##
+
+##-----------分页只显示记录数第几页，上一页，下一页--------##
+#macro( renderPage $pml )
+	<div class="pagination">
+			<span class="select-page">
+        		共$!{pml.totalCount}条记录&nbsp;
+                第$!{pml.pageId}/${pml.pageCount}页
+			</span>
+	 #if (!$null.isNull($pml.pagedModelList) && $pml.pagedModelList.size()!=0 && $pml.pageCount)
+			#set($totalPage = ${pml.pageCount})
+			#if($!{pml.pageId} == 1)
+				<span class="start-page" ><span>上一页</span></span>
+			#else
+				<a href="javascript:prevPage();" class="prev-page"><span>上一页</span></a>
+			#end
+			#if($totalPage != $!{pml.pageId})
+        		<a href="javascript:nextPage();" class="next-page"><span>下一页</span></a>
+        	#else
+				<span class="end-page"><span>下一页</span></span>
+			#end
+			<input type="hidden" id="pageNum" name="pageNum" value="$totalPage" />
+			<input type="hidden" id="_p" name="_p" value="$!{pml.pageId}"/>
+    #end
+	</div>	
+#end
+##--------------分页结束 ----------------------------------##
+
+##================ 统计 ============##
+#macro(highcharts)
+    <script type="text/javascript" src="${ctx}/js/highcharts/highcharts.js"></script>
+	<script type="text/javascript" src="${ctx}/js/highcharts/exporting.js"></script>
+#end
+
+#macro(pagination $pagination )
+    #if (!$null.isNull($pagination) && $pagination.totalResult!=0)
+        <div class="pagination">
+			<span class="select-page">
+        		共$!{pagination.totalResult}条记录&nbsp;
+                第$!{pagination.currentPage}/${pagination.totalPage}页
+			</span>
+            #set($totalPage = ${pagination.totalPage})
+			#if($!{pagination.currentPage}== 1)
+				<span class="start-page" ><span>上一页</span></span>
+			#else
+				<a href="javascript:prevSkip();" class="prev-page"><span>上一页</span></a>
+			#end
+			
+			#if($totalPage > 1)
+                #set($group = $!{pagination.currentPage}/10)
+                #set($startPage = $group*10+1)
+                #set($endPage = $group*10+10)
+				
+                #if($endPage > $totalPage)
+            		#set($endPage = $totalPage)
+                #end
+                #foreach($page in [$startPage .. $endPage])
+                    #if($page==${pagination.currentPage})
+						<span class="current-page">$page</span>
+                    #else
+            			<a href="javascript:_toPage($page);">$page</a>
+                    #end
+                #end
+			#end
+			
+			#if($totalPage != $!{pagination.currentPage})
+        		<a href="javascript:nextSkip();" class="next-page"><span>下一页</span></a>
+        	#else
+				<span class="end-page"><span>下一页</span></span>
+			#end
+             <input type="hidden" id="pageNum" name="pageNum" value="$totalPage" />
+			 #if($totalPage > 1)
+    			 <span class="skip-page">转到
+        			 <input type="text" id="_p" name="_p" value="$!{pagination.currentPage}" onkeypress="onlyAcceptNumeric(event, this);" />
+                     <button onclick="skipPage();">确定</button>
+    			 </span>
+			 #end
+		</div>	
+    #end
+#end
+
+
+##------------------ cailizhe 开发者登陆引入共公样式及JS--------------------------##
+
+#macro(developTagLibs)
+    #set( $ctx = "$!{rc.contextPath}" )
+    <script type="text/javascript">
+		window.ctx = '${ctx}';
+	</script>
+    <link type="text/css" rel="stylesheet" href="${ctx}/css/developbase.css"/>
+    <link type="text/css" rel="stylesheet" href="${ctx}/css/develop.css"/>
+    <script type="text/javascript" src="${ctx}/js/jquery/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="${ctx}/js/ott/ott-all.min.js"></script>
+#end
+
+#macro(py)
+<div class="py-section" id="py-drop-drop">
+	<div class="header">
+		<div id="py-close" class="close" onclick="_closePyOption()">关闭</div>
+	</div>
+	<div id="py-options" class="options">
+	</div>
+</div>
+#end

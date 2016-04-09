@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,11 +23,13 @@ import com.guanglumedia.cms.special.service.SpecialService;
 @Controller
 @RequestMapping(value="/cms/special")
 public class SpecialAction extends BaseAction {
+	Logger log = LoggerFactory.getLogger(SpecialAction.class);
     @Autowired
     private SpecialService specialService;
     
     @RequestMapping(value="speciallist")
     public String getSpecialList(@RequestParam Map<String,Object> map, HttpServletRequest request, Model model){
+    	log.info("speciallist----");
         PagedModelList<Special> pml = specialService.getSpecialList(this.getPageNo(request), this.getPageRow(request),map);
         model.addAttribute("pml", pml);
         model.addAttribute("map", map);
@@ -34,6 +38,7 @@ public class SpecialAction extends BaseAction {
     
     @RequestMapping(value="tomodifyspecial")
     public String toModifySpecial(@RequestParam("id")int id,@RequestParam("Edit")String edit,HttpServletRequest request, Model model){
+    	log.info("tomodifyspecial----");
         if(id>0) {
             Special special = specialService.getSpecialById(id);
             model.addAttribute("special", special);
@@ -47,6 +52,7 @@ public class SpecialAction extends BaseAction {
     
     @RequestMapping(value="specialmovielist")
     public String getMoviesBySpecialId(@RequestParam("id")int id, HttpServletRequest request, Model model) {
+    	log.info("specialmovielist----");
         List<Map<String,Object>> list = this.specialService.getMoviesBySpecialId(id);
         model.addAttribute("list", list);
         model.addAttribute("specialid", id);
@@ -55,6 +61,7 @@ public class SpecialAction extends BaseAction {
     
     @RequestMapping(value="specialmoviemodify")
     public String getOnlineMoviesBySpecialId(@RequestParam("id")int id,HttpServletRequest request, Model model){
+    	log.info("specialmoviemodify----");
         PagedModelList<Map<String,Object>> pml = specialService.getOnlineMoviesBySpecialId(id,this.getPageNo(request), this.getPageRow(request));
         model.addAttribute("pml", pml);
         model.addAttribute("specialid", id);
@@ -64,6 +71,7 @@ public class SpecialAction extends BaseAction {
     @RequestMapping(value="addspecial")
     @ResponseBody
     public Feedback addSpecial(@RequestParam Map<String,Object> map,HttpServletRequest request, Model model){
+    	log.info("addspecial----");
         int result=-1;
         String message="添加失败";
         try{
@@ -86,6 +94,7 @@ public class SpecialAction extends BaseAction {
     @RequestMapping(value="addmovie")
     @ResponseBody
     public Feedback addMovies(@RequestParam("specialid")int specialid,@RequestParam("movieid")int [] movieid,HttpServletRequest request, Model model){
+    	log.info("addmovie----");
         int result=-1;
         String message="添加失败";
         try{
@@ -104,6 +113,7 @@ public class SpecialAction extends BaseAction {
     @RequestMapping(value="delspecial")
     @ResponseBody
     public Feedback DelMovie(@RequestParam("id")int id,HttpServletRequest request, Model model){
+    	log.info("delspecial----");
         int result=-1;
         String message="删除失败";
         try{
@@ -122,6 +132,7 @@ public class SpecialAction extends BaseAction {
     @RequestMapping(value="delspecialmovie")
     @ResponseBody
     public Feedback delSpecialMovie(@RequestParam("id")int id,@RequestParam("specialId")int sid,HttpServletRequest request, Model model){
+    	log.info("delspecialmovie----");
         int result=-1;
         String message="删除失败";
         try{
@@ -140,6 +151,7 @@ public class SpecialAction extends BaseAction {
     @RequestMapping(value="modifyspecial")
     @ResponseBody
     public Feedback ModifyMovie(Special special,HttpServletRequest request, Model model){
+    	log.info("modifyspecial----");
         int result=-1;
         String message="更新失败";
         try{

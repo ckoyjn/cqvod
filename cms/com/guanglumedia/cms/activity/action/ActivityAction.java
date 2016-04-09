@@ -18,6 +18,12 @@ import com.guanglumedia.cms.common.BaseAction;
 import com.guanglumedia.cms.common.Feedback;
 import com.guanglumedia.cms.common.PagedModelList;
 
+
+/**
+ * 最新添加注释
+ * @author ck
+ *
+ */
 @Controller
 @RequestMapping("/cms/activity")
 public class ActivityAction extends BaseAction{

@@ -30,7 +30,7 @@ public class ActivityAction extends BaseAction{
     @Autowired
     private ActivityService activityService;
     
-    @RequestMapping(value="activitylist1")
+    @RequestMapping(value="activitylist")
     public String getCategoryList(HttpServletRequest request, Model model){
         PagedModelList<Activity> pml = activityService.getActivityList(this.getPageNo(request), this.getPageRow(request));
         model.addAttribute("pml", pml);

@@ -78,29 +78,29 @@
 			<tr bgcolor="#EEF4EA">
 				<td height="28" colspan="8" style="padding-left:10px;">专题管理</td>
 			</tr>
-			<tr align="center" bgcolor="#FBFCE2" height="25">
-				<td width="10%"><a href="javascript:void(0);" onclick="orderBy(this);" class="tb_head">专题名称</a></td>
-				<td width="10%"><a href="javascript:void(0);" onclick="orderBy(this);" class="tb_head">图片标识</a></td>
-				<td width="20%"><a href="javascript:void(0);" onclick="orderBy(this);" class="tb_head">关联影片</a></td>
-				<td width="10%"><a href="javascript:void(0);" onclick="orderBy(this);" class="tb_head">状态</a></td>
-				<td width="12%"><a href="javascript:void(0);" onclick="orderBy(this);" class="tb_head">创建时间</a></td>
-				<td width="10%"><a href="javascript:void(0);" onclick="orderBy(this);" class="tb_head">操作</a></td>
+			<tr align="center" bgcolor="#FBFCE2" height="25" >
+				<td colspan='3'><a href="javascript:void(0);" onclick="orderBy(this);" class="tb_head">专题名称</a></td>
+				<td><a href="javascript:void(0);" onclick="orderBy(this);" class="tb_head">图片标识</a></td>
+				<td><a href="javascript:void(0);" onclick="orderBy(this);" class="tb_head">关联影片</a></td>
+				<td><a href="javascript:void(0);" onclick="orderBy(this);" class="tb_head">状态</a></td>
+				<td><a href="javascript:void(0);" onclick="orderBy(this);" class="tb_head">创建时间</a></td>
+				<td><a href="javascript:void(0);" onclick="orderBy(this);" class="tb_head">操作</a></td>
 			</tr>
 			#if ($null.isNull($pml.pagedModelList) || $pml.pagedModelList.size()==0)
             	<tr align='center' bgcolor="#FFFFFF" height="26" align="center" onMouseMove="javascript:this.bgColor='#FCFDEE';" onMouseOut="javascript:this.bgColor='#FFFFFF';">
-            	 <td colspan="8"><h1>没有检索到数据！</h1></td>
+            	 <td colspan="12"><h1>没有检索到数据！</h1></td>
                 </tr>
             #end
 			#foreach ($s in $pml.pagedModelList)
 			<tr align='center' bgcolor="#FFFFFF" height="26" align="center"
 				onMouseMove="javascript:this.bgColor='#FCFDEE';"
 				onMouseOut="javascript:this.bgColor='#FFFFFF';">
-				<td width="20%">$!{s.name}</td>
-				<td width="10%">$!{s.identify}</td>
-				<td style="word-break: break-all;word-wrap:break-word;" width="10%">$!{s.movieNames}</td>
-				<td width="10%">#if($!{s.status} == '1') 上线  #else 下线  #end</td>
-				<td width="12%">$!{s.createtime}</td>
-				<td width="10%">
+				<td colspan='3'>$!{s.name}</td>
+				<td>$!{s.identify}</td>
+				<td style="word-break: break-all;word-wrap:break-word;">$!{s.movieNames}</td>
+				<td>#if($!{s.status} == '1') 上线  #else 下线  #end</td>
+				<td>$!{s.createtime}</td>
+				<td>
 					<img onClick="editSpecial('$!s.id')" src='${ctx}/static/img/gtk-edit.png' title='编辑' alt='编辑' style='cursor:pointer' border='0' width='16' height='16' />
 					<img onClick="showSpecial('$!s.id')" src='${ctx}/static/img/part-list.gif' title="查看" alt="查看" style='cursor:pointer' border='0' width='16' height='16'/>
 					<img onClick="delSpecial('$!s.id')" src='${ctx}/static/img/gtk-del.png' title="删除" alt="删除" style='cursor:pointer' border='0' width='16' height='16' />

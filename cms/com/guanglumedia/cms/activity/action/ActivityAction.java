@@ -24,6 +24,10 @@ import com.guanglumedia.cms.common.PagedModelList;
  * @author ck
  *
  */
+
+public static void main(String[] args){
+	System.out.println("---");
+}
 @Controller
 @RequestMapping("/cms/activity")
 public class ActivityAction extends BaseAction{

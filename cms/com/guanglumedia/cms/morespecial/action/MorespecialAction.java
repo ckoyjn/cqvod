@@ -1,6 +1,7 @@
 package com.guanglumedia.cms.morespecial.action;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,7 +18,6 @@ import com.guanglumedia.cms.common.Feedback;
 import com.guanglumedia.cms.common.PagedModelList;
 import com.guanglumedia.cms.morespecial.entity.Morespecial;
 import com.guanglumedia.cms.morespecial.service.MorespecialService;
-import com.guanglumedia.cms.pagerecommend.action.PagerecommendAction;
 
 /**
  * 更多专题控制器类
@@ -38,14 +38,14 @@ public class MorespecialAction extends BaseAction {
 	 * @return String       返回string类型的结果
 	 * @throws UnsupportedEncodingException 抛出不支持编码异常
 	 */
-	@RequestMapping(value="findmorespeciallist")
-	public String findMorespecialList(Morespecial morespecial,HttpServletRequest request, Model model) throws UnsupportedEncodingException{
-		log.info("findmorespeciallist----------");
-		PagedModelList< Morespecial> pagedModelList = this.morespecialservice.findAllMorespecialList(morespecial,getPageNo(request),getPageRow(request));
-		model.addAttribute("pagedModelList", pagedModelList);
-		model.addAttribute("MorespecialInfo", morespecial);
-		return "morespecial/ListMorespecial";
-	}
+	  @RequestMapping(value="findmorespeciallist")
+	    public String findMorespecialList(@RequestParam Map<String,Object> map, HttpServletRequest request, Model model){
+	    	log.info("findmorespeciallist----");
+	        PagedModelList<Morespecial> pagedModelList = morespecialservice.findAllMorespecialList(this.getPageNo(request), this.getPageRow(request),map);
+	        model.addAttribute("pagedModelList", pagedModelList);
+	        model.addAttribute("map", map);
+	        return "morespecial/ListMorespecial";
+	    }
 	
 	/**
 	 * 判断是修改、查看、还是添加的方法

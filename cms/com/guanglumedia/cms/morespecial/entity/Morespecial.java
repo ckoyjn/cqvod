@@ -18,6 +18,34 @@ public class Morespecial extends BaseEntity {
 	private String specialNames;//专题名称
 	private String status;//状态0-下线 1-上线
 	private int    isRecommend;//特别推荐0-否 1-是
+	private String type;//类型
+	private String sort;//排序
+	private String movieNames;//影片名称
+	private String movieIDs;
+	public String getMovieIDs() {
+		return movieIDs;
+	}
+	public void setMovieIDs(String movieIDs) {
+		this.movieIDs = movieIDs;
+	}
+	public String getMovieNames() {
+		return movieNames;
+	}
+	public void setMovieNames(String movieNames) {
+		this.movieNames = movieNames;
+	}
+	public String getType() {
+		return type;
+	}
+	public String getSort() {
+		return sort;
+	}
+	public void setSort(String sort) {
+		this.sort = sort;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
 	public Morespecial() {
 		super();
 		// TODO Auto-generated constructor stub

@@ -21,7 +21,7 @@ public class Morespecial extends BaseEntity {
 	private String type;//类型
 	private String sort;//排序
 	private String movieNames;//影片名称
-	private String movieIDs;
+	private String movieIDs;//影片ID
 	public String getMovieIDs() {
 		return movieIDs;
 	}

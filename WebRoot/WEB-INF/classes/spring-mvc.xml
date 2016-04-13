@@ -1,0 +1,125 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+ 
+	<mvc:annotation-driven />
+	<!-- tx:annotation-driven / -->
+	   <tx:annotation-driven transaction-manager="txManager" proxy-target-class="true" />
+	
+	
+	<!-- 配置资源文件位置 -->
+    <aop:aspectj-autoproxy proxy-target-class="true" />
+    <context:property-placeholder location="classpath:database-jdbc.properties" />
+    <!-- <bean class="com.lcworld.rabbitmq.OrderRepeatQuery"/> -->
+    
+    <!-- 配置数据源 -->
+    <bean id="ds" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="${driverClassName}"></property>
+        <property name="jdbcUrl" value="${url}"></property>
+        <property name="user" value="${username}"></property>
+        <property name="password" value="${password}"></property>
+        <property name="initialPoolSize" value="${initialPoolSize}"></property>
+        <property name="maxPoolSize" value="${maxPoolSize}"></property>
+        <property name="minPoolSize" value="${minPoolSize}"></property>
+        <property name="maxIdleTime" value="${maxIdleTime}"></property>
+    </bean>
+
+  <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="ds"></property>
+        <property name="configLocation" value="classpath:mybatis-config.xml">
+        </property>
+    </bean>
+    <!-- 配置事务管理器 -->
+    <bean id="txManager"
+        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="ds"></property>
+    </bean>
+    
+    <!-- 通知 -->
+    <tx:advice id="txadvice" transaction-manager="txManager">
+       
+    </tx:advice>
+    
+
+   
+
+	<!-- 返回json的编码 -->
+<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+	<property name="messageConverters">
+		<list>
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+				<property name="supportedMediaTypes">
+					<list>
+						<value>text/plain;charset=utf-8</value>
+					</list>
+				</property>
+			</bean>
+			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+		</list>
+	</property>
+</bean>
+<!-- 文件上传表单的视图解析器 -->  
+<bean id="multipartResolver"    
+    class="org.springframework.web.multipart.commons.CommonsMultipartResolver">    
+    <!-- one of the properties available; the maximum file size in bytes -->    
+    <property name="maxUploadSize" value="20480000" />    
+</bean>  
+
+
+ 
+<mvc:interceptors>
+	<bean class="com.guanglumedia.cms.interceptor.authorization.AuthorizationInterceptor"></bean>
+</mvc:interceptors>
+
+ 
+	<context:annotation-config />
+	<context:component-scan base-package="com.guanglumedia">
+	</context:component-scan>
+	
+	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<!-- prop key="java.lang.Exception">common/error</prop -->
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="velocityConfigurer" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+         <property name="resourceLoaderPath" value="/cms" />
+         <property name="configLocation" value="classpath:velocity-config.properties" />
+	</bean>
+	
+	<bean id="viewResolver"
+	         class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">	
+	         <property name="cache" value="true" />	
+	         <property name="prefix" value="" />
+	         <property name="suffix" value=".jsp" />
+			 <property name="contentType" value="text/html;charset=utf-8" />
+			 <!-- vm页面直接支持session-->
+			 <property name="exposeSessionAttributes">
+        		<value>true</value>
+    		 </property>
+    		 <!-- vm页面支持request属性引用名称 -->
+    		 <property name="requestContextAttribute">
+    		  	<value>rc</value>
+    		 </property>
+    		 <!--日期函数名称-->
+    		 <property name="dateToolAttribute" value="date" />
+    		 <!--数字函数名称-->
+             <property name="numberToolAttribute" value="number" />
+	</bean>
+</beans>

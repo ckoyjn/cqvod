@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--
+<!DOCTYPE ADI SYSTEM 'ADI.DTD'>
+-->
+<ADI>
+    <Metadata>
+        <AMS Asset_Name="CaptainCorellisMandolinpackage" Provider="guanglumedia" Product="MOD" Version_Major="1" Version_Minor="0" Description="Captain Corellis Mandolin asset package" Creation_Date="2002-03-05" Provider_ID="www.guanglumedia.com.cn" Asset_ID="UNVA2001081701003000" Asset_Class="package"/>
+    </Metadata>
+    <Asset>
+        <Metadata>
+            <AMS Asset_Name="Captain Corellis Mandolin title" Provider="guanglumedia" Product="MOD" Version_Major="1" Version_Minor="0" Description="Captain Corellis Mandolin title asset" Creation_Date="2002-03-05" Provider_ID="www.guanglumedia.com.cn" Asset_ID="UNVA2001081701003001" Asset_Class="title"/>
+            <App_Data App="MOD" Name="Title" Value="Captain Corellis Mandolin" />
+            <App_Data App="BMS" Name="Title_FG" Value="" />
+            <App_Data App="BMS" Name="TitleSearchCode" Value="cqvod" />
+            <App_Data App="MOD" Name="Summary_Medium" Value="" />
+            <App_Data App="MOD" Name="Summary_Medium_FG" Value="" />
+            <App_Data App="BMS" Name="SupplyLang" Value="English" />
+            <App_Data App="BMS" Name="ProduceDate" Value="" />
+            <App_Data App="BMS" Name="ControlLevel" Value="" />
+            <App_Data App="MOD" Name="DirectorName" Value="" />
+            <App_Data App="BMS" Name="DirectorName_FG" Value="" />
+            <App_Data App="BMS" Name="DirectorSearchCode" Value="" />
+            <App_Data App="MOD" Name="Actors_Display" Value="" />
+            <App_Data App="BMS" Name="Actors_Display_FG" Value="" />
+            <App_Data App="BMS" Name="ActorSearchCode" Value="" />
+            <App_Data App="MOD" Name="VODProvider" Value="" />
+            <App_Data App="BMS" Name="VODProvider_FG" Value="" />
+            <App_Data App="BMS" Name="IsSitcom" Value="0" />
+            <App_Data App="BMS" Name="SitcomNum" Value="" />
+            <App_Data App="BMS" Name="IsRecommend" Value="N" />
+            <App_Data App="MOD" Name="Suggested_Price" Value="0.00" />
+            <App_Data App="MOD" Name="Subject_IDs" Value="10000100000000090000000000105364" />
+            <App_Data App="BMS" Name="National" Value="中国" />
+            <App_Data App="BMS" Name="National_FG" Value="" />
+            <App_Data App="BMS" Name="NewFlag" Value="N" />
+        </Metadata>
+        <Asset>
+            <Metadata>
+                <AMS Asset_Name="Captain Corellis Mandolin(MPEG-2)" Provider="guanglumedia" Product="MOD" Version_Major="1" Version_Minor="0" Description="Captain Corellis Mandolin MPEG-2 asset" Creation_Date="05-03-2002" Provider_ID="www.guanglumedia.com.cn" Asset_ID="UNVA2001081701003002" Asset_Class="movie"/>
+                <App_Data App="MOD" Name="Run_Time" Value="01:46:52" />
+                <App_Data App="MOD" Name="HDContent" Value="N" />
+                <App_Data App="MOD" Name="Bit_Rate" Value="432" />
+                <App_Data App="MOD" Name="FileFormat" Value="MPEG_2_TRANSPORT" />
+                <App_Data App="MOD" Name="CodeFormat" Value="MPEG-2" />
+                <App_Data App="MOD" Name="Encryption" Value="N" />
+            </Metadata>
+            <Content Value="UNVA2001081701003002.mpg" />
+        </Asset>
+    </Asset>
+</ADI>
